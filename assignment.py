@@ -48,6 +48,7 @@ def construct_graph_connections(coord_list, radius):
 
                 if n != m:
                     ind = [n, m,]
+                    diff = [diff]
                     indlist.append(ind)
                     difflist.append(diff)
 
