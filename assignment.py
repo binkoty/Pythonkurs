@@ -1,5 +1,5 @@
 import numpy as np
-from math import tan, pi, log
+from math import tan, pi, log, sqrt
 import matplotlib.pyplot as plt
 
 def read_coordinate_file(filename):
@@ -22,7 +22,7 @@ def read_coordinate_file(filename):
     read.close()
 #uppgift1
 
-def plot_points(coord_list): #måste dela upp så att jag får y o x var för sig, antingen i anropet eller funk
+def plot_points(coord_list):
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
@@ -31,21 +31,38 @@ def plot_points(coord_list): #måste dela upp så att jag får y o x var för si
 #uppgift2
 
 def construct_graph_connections(coord_list, radius):
+    indlist = []
+    difflist = []
+    n = 0
 
     for line in coord_list:
-        print (line)
+        m = 0
+        #print (line)
+
         for row in coord_list:
             diff = line - row
+            diff = sqrt(diff[0]**2 + diff[1]**2)
+
             if diff < radius:
-                print('alfred pullar järnet')
+                print('alfred suger getpenis')
 
+                if n != m:
+                    ind = [n, m,]
+                    indlist.append(ind)
+                    difflist.append(diff)
 
+            m = m + 1
+        n = n + 1
+    print indlist
+    print difflist
+
+def construct_graph(coord_list, radius):
 
 
 x = read_coordinate_file('SampleCoordinates.txt')
 #print( x[:,1] )
 #print (x)
 #plot_points(x)
-radius = 999
+radius = 0.07
 construct_graph_connections(x, radius)
 
