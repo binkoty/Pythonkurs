@@ -22,7 +22,8 @@ def read_coordinate_file(filename):
     read.close()
 #uppgift1
 
-def plot_points(coord_list):
+def plot_points(coord_list, connections):
+
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
@@ -44,7 +45,7 @@ def construct_graph_connections(coord_list, radius):
             diff = sqrt(diff[0]**2 + diff[1]**2)
 
             if diff < radius:
-                print('alfred suger getpenis')
+                #print('check')
 
                 if n != m:
                     ind = [n, m,]
@@ -56,13 +57,35 @@ def construct_graph_connections(coord_list, radius):
         n = n + 1
     indlist = np.asarray(indlist)
     difflist = np.asarray(difflist)
-    print indlist
-    print difflist
+    #print difflist, indlist
+    return difflist, indlist
 
-x = read_coordinate_file('SampleCoordinates.txt')
-#print( x[:,1] )
-#print (x)
-#plot_points(x)
+
+def construct_graph(data, index, N):
+    from scipy.sparse import csr_matrix
+    noll = np.zeros ((N, N))
+    nmr = 0
+    for line in data:
+        #print line
+        i = index[nmr,:]
+        nmr = nmr + 1
+        #print i
+        #print line
+        noll[i[0],i[1]] = line
+
+    #print noll
+    ny = csr_matrix(noll)
+    #print ny
+    return ny
+
+rfile = read_coordinate_file('SampleCoordinates.txt')
+#print( rfile[:,1] )
+#print (rfile)
+plot_points(rfile)
 radius = 0.07
-construct_graph_connections(x, radius)
 
+dists, inds = construct_graph_connections(rfile, radius)
+#print (dists, inds)
+
+mat = construct_graph(dists, inds, len(rfile))
+print mat
