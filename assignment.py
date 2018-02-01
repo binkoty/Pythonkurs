@@ -53,11 +53,10 @@ def construct_graph_connections(coord_list, radius):
 
             m = m + 1
         n = n + 1
+    indlist = np.asarray(indlist)
+    difflist = np.asarray(difflist)
     print indlist
     print difflist
-
-def construct_graph(coord_list, radius):
-
 
 x = read_coordinate_file('SampleCoordinates.txt')
 #print( x[:,1] )
