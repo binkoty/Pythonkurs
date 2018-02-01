@@ -22,7 +22,7 @@ def read_coordinate_file(filename):
     read.close()
 #uppgift1
 
-def plot_points(coord_list): #måste dela upp så att jag får y o x var för sig, antingen i anropet eller funk
+def plot_points(coord_list):
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
@@ -32,13 +32,12 @@ def plot_points(coord_list): #måste dela upp så att jag får y o x var för si
 
 def construct_graph_connections(coord_list, radius):
 
-    for line in coord_list:
-        print (line)
-        for row in coord_list:
-            diff = line - row
-            if diff < radius:
-                print('fuck yea', line)
+    for x in coord_list:
 
+        for row in coord_list:
+            diff = x - row
+            diff = diff[:,0]
+            print (diff)
 
 
 x = read_coordinate_file('SampleCoordinates.txt')
