@@ -23,10 +23,40 @@ def read_coordinate_file(filename):
 #uppgift1
 
 def plot_points(coord_list, connections):
+    from matplotlib.collections import LineCollection
 
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
+    #plt.show()
+
+    segs = []
+    cnt = 0
+    for i in connections:
+
+        #seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
+        seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
+        #print connections[cnt][0]
+        #print seg
+        #print i
+        #print connections
+        #print connections[cnt, 0]
+        #print connections[cnt, 1]
+        cnt = cnt + 1
+        #print coord_list
+        #segs = segs + seg
+        segs.append(seg)
+    #print connections
+    for l in range(0,len(segs)):
+        print segs[l], \
+#behver fr varje unik siffra
+    line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
+
+    ax = plt.axes()
+    #ax.set_xlim(x.min(), x.max())
+    #ax.set_ylim(ys.min(), ys.max())
+    ax.add_collection(line_segments)
+
     plt.show()
 
 #uppgift2
@@ -79,13 +109,19 @@ def construct_graph(data, index, N):
     return ny
 
 rfile = read_coordinate_file('SampleCoordinates.txt')
+
 #print( rfile[:,1] )
 #print (rfile)
-plot_points(rfile)
+#plot_points(rfile)
+
 radius = 0.07
+#radius = 7
+#print rfile
 
 dists, inds = construct_graph_connections(rfile, radius)
+
 #print (dists, inds)
 
-mat = construct_graph(dists, inds, len(rfile))
-print mat
+plot_points(rfile, inds)
+
+#mat = construct_graph(dists, inds, len(rfile))
