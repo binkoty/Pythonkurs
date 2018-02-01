@@ -37,7 +37,7 @@ def construct_graph_connections(coord_list, radius):
         for row in coord_list:
             diff = line - row
             if diff < radius:
-                print('viktor pullar järnet')
+                print('alfred pullar järnet')
 
 
 
