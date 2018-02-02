@@ -6,7 +6,9 @@ from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
 from scipy import spatial
 
+import time
 
+time_base = time.time()
 def read_coordinate_file(filename):
 
                 #read file with coordinates and convert form longitude/latitude to x/y
@@ -27,6 +29,8 @@ def read_coordinate_file(filename):
     cordin = np.asarray(cordin)
     #print(cordin)
     #print(type(cordin))
+    global time_1
+    time_1 = time.time() - time_base
     return(cordin)
     read.close()
 
@@ -160,9 +164,36 @@ def compute_path(prem, strt, end):
 
     return path
 
-r = 0.08
+rfile = read_coordinate_file('SampleCoordinates.txt')
+time_1 = time.time() - time_base
+#print( rfile[:,1] )
+#print (rfile)
+#plot_points(rfile)
+
+radius = 0.08
+#radius = 7
+#print rfile
+
+dists, inds = construct_graph_connections(rfile, radius)
+time_2 = time.time() - time_base
+#print (dists, inds)
+
+#plot_points(rfile, inds)
+
+smat = construct_graph(dists, inds, len(rfile))
+time_3 = time.time() - time_base
+#print smat
+prem = short_path(smat)
+time_4 = time.time() - time_base
+#print(prem)
 strt = 0
 end = 5
+path = compute_path(prem, strt, end)
+time_5 = time.time() - time_base
+#print(path)
+plot_points(rfile, inds, path)
+time_6 = time.time() - time_base
+print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
 
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
