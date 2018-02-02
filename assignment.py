@@ -3,6 +3,7 @@ from math import tan, pi, log, sqrt
 import matplotlib.pyplot as plt
 from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
+from scipy.sparse import csr_matrix
 
 def read_coordinate_file(filename):
     read = open(filename, 'r')
@@ -103,7 +104,6 @@ def construct_graph_connections(coord_list, radius):
 
 
 def construct_graph(data, index, N):
-    from scipy.sparse import csr_matrix
     noll = np.zeros ((N, N))
     nmr = 0
     for line in data:
