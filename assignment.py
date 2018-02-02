@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
+from scipy import spatial
+
 
 def read_coordinate_file(filename):
 
                 #read file with coordinates and convert form longitude/latitude to x/y
+                #returns array as [[x1 y1][x2 y2]..]
 
     read = open(filename, 'r')
     cordin = []
@@ -29,8 +32,8 @@ def read_coordinate_file(filename):
 
 def plot_points(coord_list, connections, path):
 
-                #plot connections and shortest path
-                #coord_list = [[x1 y1][x2 y2]..]  connections = [[i1 j1][i2 j2]..]  path = [[a1][a2]..]
+                #plot connections and shortest path on graph
+                #coord_list = [[x1 y1][x2 y2]..]  connections = [[i1 j1][i2 j2]..]  path = [a1, a2, a3,..]
                 #                               where i1 and i2 are connecting cities
 
     x = coord_list[:,0]
@@ -58,6 +61,7 @@ def plot_points(coord_list, connections, path):
         seg2.append(seg)
         # print (seg)
         cun = cun + 1
+
     segs2 = [seg2]
 
     #print connections
@@ -109,6 +113,18 @@ def construct_graph_connections(coord_list, radius):
     return difflist, indlist
 
 
+def construct_fast_graph_connections(coord_list, radius):
+
+    results = []
+    for i in coord_list:
+        n = 0
+        for result in tree.query_ball_point((coord_list[n]), radius):
+            results.append(result)
+
+            n = n + 1
+
+    print (results)
+
 def construct_graph(data, index, N):
     noll = np.zeros ((N, N))
     nmr = 0
@@ -125,10 +141,10 @@ def construct_graph(data, index, N):
     #print ny
     return ny
 
-#bor man importa i funktioner?
 
 def short_path(smatrix):
-    #pred = shortest_path(smatrix,method='D',return_predecessors=True,indices=(i,j))
+
+                #create predecessor array [x1, x2, x3,..]
 
     dist, pred = dijkstra(smatrix,return_predecessors=True)
     return pred
@@ -144,28 +160,20 @@ def compute_path(prem, strt, end):
 
     return path
 
-rfile = read_coordinate_file('SampleCoordinates.txt')
-
-#print( rfile[:,1] )
-#print (rfile)
-#plot_points(rfile)
-
-radius = 0.08
-#radius = 7
-#print rfile
-
-dists, inds = construct_graph_connections(rfile, radius)
-
-#print (dists, inds)
-
-#plot_points(rfile, inds)
-
-smat = construct_graph(dists, inds, len(rfile))
-#print smat
-prem = short_path(smat)
-print(prem)
+r = 0.08
 strt = 0
 end = 5
-path = compute_path(prem, strt, end)
-print(path)
-plot_points(rfile, inds, path)
+
+rfile = read_coordinate_file('SampleCoordinates.txt')
+
+#dists, inds = construct_graph_connections(rfile, radius)
+
+#smat = construct_graph(dists, inds, len(rfile))
+
+#pred = short_path(smat)
+
+#path = compute_path(pred, strt, end)
+
+#plot_points(rfile, inds, path)
+
+construct_fast_graph_connections(rfile, r)
