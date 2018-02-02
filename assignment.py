@@ -34,7 +34,7 @@ def plot_points(coord_list, connections):
     cnt = 0
     for i in connections:
 
-        #seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
+        seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
         seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
         #print connections[cnt][0]
         #print seg
@@ -47,14 +47,12 @@ def plot_points(coord_list, connections):
         #segs = segs + seg
         segs.append(seg)
     #print connections
-    for l in range(0,len(segs)):
-        print segs[l], \
+    #for l in range(0,len(segs)):
+        #print (segs[l])
 #behver fr varje unik siffra
     line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
 
     ax = plt.axes()
-    #ax.set_xlim(x.min(), x.max())
-    #ax.set_ylim(ys.min(), ys.max())
     ax.add_collection(line_segments)
 
     plt.show()
@@ -108,13 +106,21 @@ def construct_graph(data, index, N):
     #print ny
     return ny
 
+#bor man importa i funktioner?
+
+def shortest_path(smatrix, i, j):
+    from scipy.sparse.csgraph import dijkstra
+
+    pred = dijkstra(smatrix,indices=(i,j),return_predecessors=True)
+    print pred
+
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
 #print( rfile[:,1] )
 #print (rfile)
 #plot_points(rfile)
 
-radius = 0.07
+radius = 0.08
 #radius = 7
 #print rfile
 
@@ -122,6 +128,8 @@ dists, inds = construct_graph_connections(rfile, radius)
 
 #print (dists, inds)
 
-plot_points(rfile, inds)
+#plot_points(rfile, inds)
 
-#mat = construct_graph(dists, inds, len(rfile))
+smat = construct_graph(dists, inds, len(rfile))
+print smat
+shortest_path(smat,0,1)
