@@ -108,12 +108,18 @@ def construct_graph(data, index, N):
 
 #bor man importa i funktioner?
 
-def shortest_path(smatrix, i, j):
+def shortest_path(smatrix, i):
     from scipy.sparse.csgraph import dijkstra
 
-    pred = dijkstra(smatrix,indices=(i,j),return_predecessors=True)
-    print pred
+    distances, predecessors = dijkstra(smatrix, indices=[i], return_predecessors=True)
+    #print(distances)
+    print(predecessors)
+    return predecessors
 
+compute_path(predecessor_matrix, start_node, end_node)
+"""
+
+"""
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
 #print( rfile[:,1] )
@@ -131,5 +137,7 @@ dists, inds = construct_graph_connections(rfile, radius)
 #plot_points(rfile, inds)
 
 smat = construct_graph(dists, inds, len(rfile))
-print smat
-shortest_path(smat,0,1)
+#print smat
+predecessor_matrix = shortest_path(smat, 0)
+
+compute_path(predecessor_matrix, start_node, end_node)
