@@ -1,6 +1,7 @@
 import numpy as np
 from math import tan, pi, log, sqrt
 import matplotlib.pyplot as plt
+from scipy.sparse.csgraph import dijkstra, shortest_path
 
 def read_coordinate_file(filename):
     read = open(filename, 'r')
@@ -22,19 +23,25 @@ def read_coordinate_file(filename):
     read.close()
 #uppgift1
 
-def plot_points(coord_list, connections):
+def plot_points(coord_list, connections, path):
     from matplotlib.collections import LineCollection
 
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
     #plt.show()
-
+    segs2 = []
+    cun = 0
+    for i in path:
+        y = [coord_list[path[cun]]]
+        segs2.append(y)
+        print (y)
+        cun = cun + 1
     segs = []
     cnt = 0
     for i in connections:
 
-        seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
+        #seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
         seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
         cnt = cnt + 1
         #print coord_list
@@ -45,9 +52,10 @@ def plot_points(coord_list, connections):
         #print (segs[l])
 #behver fr varje unik siffra
     line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
-
+    line_segments2 = LineCollection(segs2, linewidth=(1, 2, 3, 4), linestyle='solid')
     ax = plt.axes()
-    ax.add_collection(line_segments)
+    #ax.add_collection(line_segments)
+    #ax.add_collection(line_segments2)
 
     plt.show()
 
@@ -103,16 +111,22 @@ def construct_graph(data, index, N):
 #bor man importa i funktioner?
 
 def short_path(smatrix):
-    from scipy.sparse.csgraph import dijkstra, shortest_path
-
     #pred = shortest_path(smatrix,method='D',return_predecessors=True,indices=(i,j))
 
     dist, pred = dijkstra(smatrix,return_predecessors=True)
     return pred
 
-#def compute_path(prem, strt, end):
+def compute_path(prem, strt, end):
+    path = []
+    i = end
+    while i != strt:
+        if i == end:
+            path.append(i)
+        i = prem[strt, i]
+        path.append(i)
 
 
+    return path
 
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
@@ -132,5 +146,10 @@ dists, inds = construct_graph_connections(rfile, radius)
 
 smat = construct_graph(dists, inds, len(rfile))
 #print smat
-lol = short_path(smat)
-print lol
+prem = short_path(smat)
+print(prem)
+strt = 0
+end = 5
+path = compute_path(prem, strt, end)
+print(path)
+plot_points(rfile, inds, path)
