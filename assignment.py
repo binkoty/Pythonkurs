@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
-from scipy import spatial
+from scipy.spatial import cKDTree, KDTree
 
 import time
+
 
 time_base = time.time()
 def read_coordinate_file(filename):
@@ -119,15 +120,21 @@ def construct_graph_connections(coord_list, radius):
 
 def construct_fast_graph_connections(coord_list, radius):
 
-    results = []
+    nbrsfinal = []
+    co_tree = KDTree(coord_list)
+
     for i in coord_list:
         n = 0
-        for result in tree.query_ball_point((coord_list[n]), radius):
-            results.append(result)
+        nbrs = []
+        for x in co_tree.query_ball_point((i), radius):
+
+            nbrs.append(x)
 
             n = n + 1
 
-    print (results)
+        nbrsfinal.append(nbrs)
+
+    print (nbrsfinal)
 
 def construct_graph(data, index, N):
     noll = np.zeros ((N, N))
@@ -164,47 +171,32 @@ def compute_path(prem, strt, end):
 
     return path
 
+strt = 0
+end = 5
+r = 0.08
+
 rfile = read_coordinate_file('SampleCoordinates.txt')
 time_1 = time.time() - time_base
-#print( rfile[:,1] )
-#print (rfile)
-#plot_points(rfile)
 
-radius = 0.08
-#radius = 7
-#print rfile
-
-dists, inds = construct_graph_connections(rfile, radius)
+dists, inds = construct_graph_connections(rfile, r)
+#print (inds)
 time_2 = time.time() - time_base
-#print (dists, inds)
 
-#plot_points(rfile, inds)
+#kuken = construct_fast_graph_connections(rfile, r)
 
 smat = construct_graph(dists, inds, len(rfile))
 time_3 = time.time() - time_base
-#print smat
-prem = short_path(smat)
+
+pred = short_path(smat)
 time_4 = time.time() - time_base
-#print(prem)
-strt = 0
-end = 5
-path = compute_path(prem, strt, end)
+
+path = compute_path(pred, strt, end)
 time_5 = time.time() - time_base
-#print(path)
-plot_points(rfile, inds, path)
+
+#lot_points(rfile, inds, path)
 time_6 = time.time() - time_base
+
 print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
 
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
-#dists, inds = construct_graph_connections(rfile, radius)
-
-#smat = construct_graph(dists, inds, len(rfile))
-
-#pred = short_path(smat)
-
-#path = compute_path(pred, strt, end)
-
-#plot_points(rfile, inds, path)
-
-construct_fast_graph_connections(rfile, r)
