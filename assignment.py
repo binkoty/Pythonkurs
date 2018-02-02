@@ -6,6 +6,9 @@ from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
 
 def read_coordinate_file(filename):
+
+                #read file with coordinates and convert form longitude/latitude to x/y
+
     read = open(filename, 'r')
     cordin = []
     for line in read:
@@ -23,22 +26,23 @@ def read_coordinate_file(filename):
     #print(type(cordin))
     return(cordin)
     read.close()
-#uppgift1
 
 def plot_points(coord_list, connections, path):
 
+                #plot connections and shortest path
+                #coord_list = [[x1 y1][x2 y2]..]  connections = [[i1 j1][i2 j2]..]  path = [[a1][a2]..]
+                #                               where i1 and i2 are connecting cities
 
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
     #plt.show()
 
-
+                # create array for line-coordinates (all connections)
     segs = []
     cnt = 0
     for i in connections:
 
-        #seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
         seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
 
         #print coord_list
@@ -46,7 +50,7 @@ def plot_points(coord_list, connections, path):
         segs.append(seg)
         cnt = cnt + 1
 
-                #create array for line-coordinates
+                #create array for line-coordinates (shortest path)
     seg2 = []
     cun = 0
     for i in path:
@@ -61,7 +65,7 @@ def plot_points(coord_list, connections, path):
     #    print (segs[l])
     #behver fr varje unik siffra
     line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
-    line_segments2 = LineCollection(segs2, linewidths=(8, 8, 8, 8), linestyle='solid')
+    line_segments2 = LineCollection(segs2, linewidths=(4, 2, 3, 4), linestyle='solid')
     ax = plt.axes()
     #print (segs)
     #print (segs2)
@@ -74,6 +78,8 @@ def plot_points(coord_list, connections, path):
 #uppgift2
 
 def construct_graph_connections(coord_list, radius):
+
+
     indlist = []
     difflist = []
     n = 0
@@ -135,7 +141,6 @@ def compute_path(prem, strt, end):
             path.append(i)
         i = prem[strt, i]
         path.append(i)
-
 
     return path
 
