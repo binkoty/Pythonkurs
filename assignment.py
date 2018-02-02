@@ -2,6 +2,7 @@ import numpy as np
 from math import tan, pi, log, sqrt
 import matplotlib.pyplot as plt
 from scipy.sparse.csgraph import dijkstra, shortest_path
+from matplotlib.collections import LineCollection
 
 def read_coordinate_file(filename):
     read = open(filename, 'r')
@@ -24,38 +25,48 @@ def read_coordinate_file(filename):
 #uppgift1
 
 def plot_points(coord_list, connections, path):
-    from matplotlib.collections import LineCollection
+
 
     x = coord_list[:,0]
     y = coord_list[:,1]
     plt.scatter(x,y)
     #plt.show()
-    segs2 = []
-    cun = 0
-    for i in path:
-        y = [coord_list[path[cun]]]
-        segs2.append(y)
-        print (y)
-        cun = cun + 1
+
+
     segs = []
     cnt = 0
     for i in connections:
 
         #seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
         seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
-        cnt = cnt + 1
+
         #print coord_list
         #segs = segs + seg
         segs.append(seg)
+        cnt = cnt + 1
+
+                #create array for line-coordinates
+    seg2 = []
+    cun = 0
+    for i in path:
+        seg = coord_list[path[cun]]
+        seg2.append(seg)
+        # print (seg)
+        cun = cun + 1
+    segs2 = [seg2]
+
     #print connections
     #for l in range(0,len(segs)):
-        #print (segs[l])
-#behver fr varje unik siffra
+    #    print (segs[l])
+    #behver fr varje unik siffra
     line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
-    line_segments2 = LineCollection(segs2, linewidth=(1, 2, 3, 4), linestyle='solid')
+    line_segments2 = LineCollection(segs2, linewidths=(8, 8, 8, 8), linestyle='solid')
     ax = plt.axes()
-    #ax.add_collection(line_segments)
-    #ax.add_collection(line_segments2)
+    #print (segs)
+    #print (segs2)
+    #print (line_segments2)
+    ax.add_collection(line_segments)
+    ax.add_collection(line_segments2)
 
     plt.show()
 
