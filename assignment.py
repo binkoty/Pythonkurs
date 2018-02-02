@@ -36,12 +36,6 @@ def plot_points(coord_list, connections):
 
         seg = [coord_list[connections[cnt,0]], coord_list[connections[cnt,1]]]
         seg = [coord_list[connections[cnt][0]], coord_list[connections[cnt][1]]]
-        #print connections[cnt][0]
-        #print seg
-        #print i
-        #print connections
-        #print connections[cnt, 0]
-        #print connections[cnt, 1]
         cnt = cnt + 1
         #print coord_list
         #segs = segs + seg
@@ -108,18 +102,18 @@ def construct_graph(data, index, N):
 
 #bor man importa i funktioner?
 
-def shortest_path(smatrix, i):
-    from scipy.sparse.csgraph import dijkstra
+def short_path(smatrix):
+    from scipy.sparse.csgraph import dijkstra, shortest_path
 
-    distances, predecessors = dijkstra(smatrix, indices=[i], return_predecessors=True)
-    #print(distances)
-    print(predecessors)
-    return predecessors
+    #pred = shortest_path(smatrix,method='D',return_predecessors=True,indices=(i,j))
 
-compute_path(predecessor_matrix, start_node, end_node)
-"""
+    dist, pred = dijkstra(smatrix,return_predecessors=True)
+    return pred
 
-"""
+#def compute_path(prem, strt, end):
+
+
+
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
 #print( rfile[:,1] )
@@ -138,6 +132,5 @@ dists, inds = construct_graph_connections(rfile, radius)
 
 smat = construct_graph(dists, inds, len(rfile))
 #print smat
-predecessor_matrix = shortest_path(smat, 0)
-
-compute_path(predecessor_matrix, start_node, end_node)
+lol = short_path(smat)
+print lol
