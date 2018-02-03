@@ -121,7 +121,7 @@ def construct_graph_connections(coord_list, radius):
 def construct_fast_graph_connections(coord_list, radius):
 
     nbrsfinal = []
-    co_tree = KDTree(coord_list)
+    co_tree = cKDTree(coord_list)
 
     for i in coord_list:
         n = 0
@@ -129,12 +129,33 @@ def construct_fast_graph_connections(coord_list, radius):
         for x in co_tree.query_ball_point((i), radius):
 
             nbrs.append(x)
-
             n = n + 1
 
         nbrsfinal.append(nbrs)
 
-    print (nbrsfinal)
+    #print (nbrsfinal)
+
+    dists = []
+    inds = []
+
+    cons = []
+
+    cntr = 0
+    for i in range(0,len(nbrsfinal)):
+        for j in range (0, len(nbrsfinal[i])):
+            cord = (coord_list[nbrsfinal[i][j]])
+
+            if cntr != nbrsfinal[i][j]:
+                inds.append([cntr, nbrsfinal[i][j]])
+                dists.append([sqrt(cord[0]**2 + cord[1]**2)])
+
+        cntr = cntr + 1
+
+    inds = np.asarray(inds)
+    dists = np.asarray(dists)
+
+    return dists, inds
+
 
 def construct_graph(data, index, N):
     noll = np.zeros ((N, N))
@@ -155,7 +176,7 @@ def construct_graph(data, index, N):
 
 def short_path(smatrix):
 
-                #create predecessor array [x1, x2, x3,..]
+                #create predecessor array
 
     dist, pred = dijkstra(smatrix,return_predecessors=True)
     return pred
@@ -178,22 +199,28 @@ r = 0.08
 rfile = read_coordinate_file('SampleCoordinates.txt')
 time_1 = time.time() - time_base
 
-dists, inds = construct_graph_connections(rfile, r)
-#print (inds)
+
+dists, inds = construct_fast_graph_connections(rfile, r)
+
+#dists, inds = construct_graph_connections(rfile, r)
 time_2 = time.time() - time_base
 
-#kuken = construct_fast_graph_connections(rfile, r)
+#print (dists)
 
 smat = construct_graph(dists, inds, len(rfile))
+#smat2 = construct_graph(dists2, inds2, len(rfile))
 time_3 = time.time() - time_base
+#print smat
 
 pred = short_path(smat)
 time_4 = time.time() - time_base
 
+#print pred
+
 path = compute_path(pred, strt, end)
 time_5 = time.time() - time_base
 
-#lot_points(rfile, inds, path)
+plot_points(rfile, inds, path)
 time_6 = time.time() - time_base
 
 print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
