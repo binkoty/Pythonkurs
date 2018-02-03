@@ -223,7 +223,7 @@ time_5 = time.time() - time_base
 plot_points(rfile, inds, path)
 time_6 = time.time() - time_base
 
-print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
+#print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
 
 rfile = read_coordinate_file('SampleCoordinates.txt')
 
