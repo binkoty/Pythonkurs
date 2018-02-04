@@ -195,8 +195,8 @@ def compute_path(prem, strt, end):
 
     return path
 
-strt = 6
-end = 2
+strt = 0
+end = 5
 r = 0.08
 
 #rfile = read_coordinate_file('SampleCoordinates.txt')
@@ -228,6 +228,4 @@ plot_points(rfile, inds, path)
 time_6 = time.time() - time_base
 
 #print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
-
-rfile = read_coordinate_file('SampleCoordinates.txt')
 
