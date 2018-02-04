@@ -197,19 +197,25 @@ def compute_path(prem, strt, end):
             path.append(i)
         i = prem[strt, i]
         path.append(i)
-
+    print dist
     disttot = 0
     for x in range(len(path)):
         disttot = disttot + dist[x]
-
+        print dist[x]
+    #print disttot
     return disttot, path
 
-strt = 1573
-end = 10584
-r = 0.0025
+#strt = 1573
+#end = 10584
 
-#rfile = read_coordinate_file('SampleCoordinates.txt')
-rfile = read_coordinate_file('GermanyCities.txt')
+strt = 0
+end = 5
+
+r = 0.08
+#r = 0.0025
+
+rfile = read_coordinate_file('SampleCoordinates.txt')
+#rfile = read_coordinate_file('GermanyCities.txt')
 time_1 = time.time() - time_base
 print 1
 
