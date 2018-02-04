@@ -191,31 +191,34 @@ def short_path(smatrix):
 
 def compute_path(prem, strt, end):
     path = []
+    disttot = []
     i = end
     while i != strt:
         if i == end:
             path.append(i)
+            disttot.append(dist[strt, i])
+
         i = prem[strt, i]
         path.append(i)
-    print dist
-    disttot = 0
-    for x in range(len(path)):
-        disttot = disttot + dist[x]
-        print dist[x]
+        disttot[0] = disttot[0] + dist[strt, i]
+
+    # print dist
+    print disttot
     #print disttot
+
     return disttot, path
 
-#strt = 1573
-#end = 10584
+strt = 1573
+end = 10584
 
-strt = 0
-end = 5
+#strt = 0
+#end = 5
 
-r = 0.08
-#r = 0.0025
+#r = 0.08
+r = 0.0025
 
-rfile = read_coordinate_file('SampleCoordinates.txt')
-#rfile = read_coordinate_file('GermanyCities.txt')
+#rfile = read_coordinate_file('SampleCoordinates.txt')
+rfile = read_coordinate_file('GermanyCities.txt')
 time_1 = time.time() - time_base
 print 1
 
@@ -250,5 +253,6 @@ print 6
 
 print disttot
 print path
+print 'klar'
 
 
