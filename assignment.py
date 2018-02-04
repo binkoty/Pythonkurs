@@ -42,8 +42,8 @@ def read_coordinate_file(filename):
 def plot_points(coord_list, connections, path):
 
                 #plot connections and shortest path on graph
-                #coord_list = [[x1 y1][x2 y2]..]  connections = [[i1 j1][i2 j2]..]  path = [a1, a2, a3,..]
-                #                               where i1 and i2 are connecting cities
+                #coord_list = [[x1 y1][x2 y2]..]  connections = [[i1 j1][i2 j2]..]        path = [a1, a2, a3,..]
+                #                                 where i1 and i2 are connecting cities
 
     x = coord_list[:,0]
     y = coord_list[:,1]
@@ -185,9 +185,9 @@ def construct_graph(data, index, N):
 def short_path(smatrix):
 
                 #create predecessor array
-
+    global dist
     dist, pred = dijkstra(smatrix,return_predecessors=True)
-    return pred
+    return dist, pred
 
 def compute_path(prem, strt, end):
     path = []
@@ -198,7 +198,11 @@ def compute_path(prem, strt, end):
         i = prem[strt, i]
         path.append(i)
 
-    return path
+    disttot = 0
+    for x in range(len(path)):
+        disttot = disttot + dist[x]
+
+    return disttot, path
 
 strt = 1573
 end = 10584
@@ -224,12 +228,12 @@ time_3 = time.time() - time_base
 #print smat
 print 3
 
-pred = short_path(smat)
+distmat, pred = short_path(smat)
 time_4 = time.time() - time_base
 print 4
 #print pred
 
-path = compute_path(pred, strt, end)
+disttot, path = compute_path(pred, strt, end)
 time_5 = time.time() - time_base
 print 5
 
@@ -237,4 +241,8 @@ plot_points(rfile, inds, path)
 time_6 = time.time() - time_base
 print 6
 #print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
+
+print disttot
+print path
+
 
