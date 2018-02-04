@@ -19,7 +19,10 @@ def read_coordinate_file(filename):
     cordin = []
     for line in read:
         line = line.strip('{} \t\n')
+        #print line
         lat, long = line.split(',')
+        long = long.replace ('}','')
+        #print lat, long
         lat = float(lat)
         long = float(long)
         R = 1
@@ -192,11 +195,12 @@ def compute_path(prem, strt, end):
 
     return path
 
-strt = 0
-end = 5
+strt = 6
+end = 2
 r = 0.08
 
-rfile = read_coordinate_file('SampleCoordinates.txt')
+#rfile = read_coordinate_file('SampleCoordinates.txt')
+rfile = read_coordinate_file('GermanyCities.txt')
 time_1 = time.time() - time_base
 
 
