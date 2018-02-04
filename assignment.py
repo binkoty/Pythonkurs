@@ -63,7 +63,7 @@ def plot_points(coord_list, connections, path):
         cnt = cnt + 1
 
                 #create array for line-coordinates (shortest path)
-    print 'ritat'
+    #print 'ritat'
 
     seg2 = []
     cun = 0
@@ -73,7 +73,7 @@ def plot_points(coord_list, connections, path):
         # print (seg)
         cun = cun + 1
 
-    print 'sp ritat'
+    #print 'sp ritat'
     segs2 = [seg2]
 
     #print connections
@@ -88,7 +88,7 @@ def plot_points(coord_list, connections, path):
     #print (line_segments2)
     ax.add_collection(line_segments)
     ax.add_collection(line_segments2)
-    print 'bara plt.show kvar'
+    #print 'bara plt.show kvar'
     plt.show()
 
 #uppgift2
@@ -203,22 +203,26 @@ def compute_path(prem, strt, end):
         disttot[0] = disttot[0] + dist[strt, i]
 
     # print dist
-    print disttot
+    #print disttot
     #print disttot
 
     return disttot, path
 
-strt = 1573
-end = 10584
+strt = 311
+end = 702
 
 #strt = 0
 #end = 5
 
+
+
 #r = 0.08
-r = 0.0025
+r = 0.005
 
 #rfile = read_coordinate_file('SampleCoordinates.txt')
-rfile = read_coordinate_file('GermanyCities.txt')
+#rfile = read_coordinate_file('GermanyCities.txt')
+rfile = read_coordinate_file('HungaryCities.txt')
+
 time_1 = time.time() - time_base
 print 1
 
