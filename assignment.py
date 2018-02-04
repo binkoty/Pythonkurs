@@ -1,6 +1,7 @@
 import numpy as np
 from math import tan, pi, log, sqrt
 import matplotlib.pyplot as plt
+from matplotlib import colors as mcolors
 from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
@@ -62,6 +63,8 @@ def plot_points(coord_list, connections, path):
         cnt = cnt + 1
 
                 #create array for line-coordinates (shortest path)
+    print 'ritat'
+
     seg2 = []
     cun = 0
     for i in path:
@@ -70,21 +73,22 @@ def plot_points(coord_list, connections, path):
         # print (seg)
         cun = cun + 1
 
+    print 'sp ritat'
     segs2 = [seg2]
 
     #print connections
     #for l in range(0,len(segs)):
     #    print (segs[l])
     #behver fr varje unik siffra
-    line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2), linestyle='solid')
-    line_segments2 = LineCollection(segs2, linewidths=(4, 2, 3, 4), linestyle='solid')
+    line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2),colors='grey', linestyle='solid')
+    line_segments2 = LineCollection(segs2, linewidths=(1, 2, 3, 4),colors='blue', linestyle='solid')
     ax = plt.axes()
     #print (segs)
     #print (segs2)
     #print (line_segments2)
     ax.add_collection(line_segments)
     ax.add_collection(line_segments2)
-
+    print 'bara plt.show kvar'
     plt.show()
 
 #uppgift2
@@ -132,6 +136,7 @@ def construct_fast_graph_connections(coord_list, radius):
         for x in co_tree.query_ball_point((i), radius):
 
             nbrs.append(x)
+            #print x
             n = n + 1
 
         nbrsfinal.append(nbrs)
@@ -195,16 +200,18 @@ def compute_path(prem, strt, end):
 
     return path
 
-strt = 0
-end = 5
-r = 0.08
+strt = 1573
+end = 10584
+r = 0.0025
 
 #rfile = read_coordinate_file('SampleCoordinates.txt')
 rfile = read_coordinate_file('GermanyCities.txt')
 time_1 = time.time() - time_base
-
+print 1
 
 dists, inds = construct_fast_graph_connections(rfile, r)
+
+print 2
 
 #dists, inds = construct_graph_connections(rfile, r)
 time_2 = time.time() - time_base
@@ -215,17 +222,19 @@ smat = construct_graph(dists, inds, len(rfile))
 #smat2 = construct_graph(dists2, inds2, len(rfile))
 time_3 = time.time() - time_base
 #print smat
+print 3
 
 pred = short_path(smat)
 time_4 = time.time() - time_base
-
+print 4
 #print pred
 
 path = compute_path(pred, strt, end)
 time_5 = time.time() - time_base
+print 5
 
 plot_points(rfile, inds, path)
 time_6 = time.time() - time_base
-
+print 6
 #print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
 
