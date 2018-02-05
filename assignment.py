@@ -19,10 +19,9 @@ def read_coordinate_file(filename):
     read = open(filename, 'r')
     cordin = []
     for line in read:
-        line = line.strip('{} \t\n')
+        line = line.strip('{} \t\n\r')
         #print line
         lat, long = line.split(',')
-        long = long.replace ('}','')
         #print lat, long
         lat = float(lat)
         long = float(long)
@@ -99,25 +98,22 @@ def construct_graph_connections(coord_list, radius):
     difflist = []
     n = 0
 
-    for line in coord_list:
-        m = 0
+    for n, line in enumerate(coord_list):
         #print (line)
 
-        for row in coord_list:
+        for m, row in enumerate(coord_list):
             diff = line - row
             diff = sqrt(diff[0]**2 + diff[1]**2)
 
             if diff < radius:
                 #print('check')
 
-                if n != m:
+                if n < m:
                     ind = [n, m,]
                     diff = [diff]
                     indlist.append(ind)
                     difflist.append(diff)
 
-            m = m + 1
-        n = n + 1
     indlist = np.asarray(indlist)
     difflist = np.asarray(difflist)
     #print difflist, indlist
@@ -148,12 +144,12 @@ def construct_fast_graph_connections(coord_list, radius):
     cons = []
 
     cntr = 0
-    for i in range(0,len(nbrsfinal)):
-        for j in range (0, len(nbrsfinal[i])):
-            cord = (coord_list[nbrsfinal[i][j]])
+    for nbrs in nbrsfinal:
+        for nbr in nbrs:
+            cord = (coord_list[nbr])
 
-            if cntr != nbrsfinal[i][j]:
-                inds.append([cntr, nbrsfinal[i][j]])
+            if cntr != nbr:
+                inds.append([cntr, nbr])
                 dists.append([sqrt(cord[0]**2 + cord[1]**2)])
 
         cntr = cntr + 1
@@ -165,28 +161,39 @@ def construct_fast_graph_connections(coord_list, radius):
 
 
 def construct_graph(data, index, N):
-    noll = np.zeros ((N, N))
-    nmr = 0
-    for line in data:
-        #print line
-        i = index[nmr,:]
-        nmr = nmr + 1
-        #print i
-        #print line
-        noll[i[0],i[1]] = line
 
-    #print noll
-    ny = csr_matrix(noll)
+    #print data
+    #print index
+    row = []
+    col = []
+    dat = []
+
+    for i, n in enumerate(index):
+        #print n[0]
+        row.append(n[0])
+        #print n[1]
+        col.append(n[1])
+        dat.append(data[i][0])
+
+    col = np.asarray(col)
+    row = np.asarray(row)
+    dat = np.asarray(dat)
+
+    #print (dat)
+    #print (row)
+    #print (col)
+
+    ny = csr_matrix((dat, (row, col)), shape=(N, N))
     #print ny
     return ny
 
 
-def short_path(smatrix):
-
-                #create predecessor array
-    global dist
-    dist, pred = dijkstra(smatrix,return_predecessors=True)
-    return dist, pred
+#def short_path(smatrix):
+#
+#                #create predecessor array
+#    global dist
+#    dist, pred = dijkstra(smatrix,return_predecessors=True)
+#    return dist, pred
 
 def compute_path(prem, strt, end):
     path = []
@@ -195,11 +202,11 @@ def compute_path(prem, strt, end):
     while i != strt:
         if i == end:
             path.append(i)
-            disttot.append(dist[strt, i])
+            #disttot.append(dist[strt, i])
 
-        i = prem[strt, i]
+        i = prem[i]
         path.append(i)
-        disttot[0] = disttot[0] + dist[strt, i]
+        #disttot[0] += dist[strt, i]
 
     # print dist
     #print disttot
@@ -207,54 +214,64 @@ def compute_path(prem, strt, end):
 
     return disttot, path
 
-strt = 311
-end = 702
+strt = 1573
+end = 10584
 
 #strt = 0
 #end = 5
 
 
 
-#r = 0.08
-r = 0.005
+#r = 0.08       #sample
+#r = 0.005      #hungary
+r = 0.0025      #germany
 
 #rfile = read_coordinate_file('SampleCoordinates.txt')
-#rfile = read_coordinate_file('GermanyCities.txt')
-rfile = read_coordinate_file('HungaryCities.txt')
+#rfile = read_coordinate_file('HungaryCities.txt')
+rfile = read_coordinate_file('GermanyCities.txt')
 
 time_1 = time.time() - time_base
-print(1)
+#print(1)
 
 dists, inds = construct_fast_graph_connections(rfile, r)
 
-print(2)
+#print(2)
+#print dists,inds
 
 #dists, inds = construct_graph_connections(rfile, r)
 time_2 = time.time() - time_base - time_1
 
 #print (dists)
+#print (len(rfile))
+#print len(dists)
+#print len(inds)
 
 smat = construct_graph(dists, inds, len(rfile))
 #smat2 = construct_graph(dists2, inds2, len(rfile))
 time_3 = time.time() - time_base - time_1 - time_2
 #print smat
-print(3)
+#print(3)
 
-distmat, pred = short_path(smat)
+
+distmat, pred = dijkstra(smat, directed=False, indices=strt, return_predecessors=True)
+
+#print (pred)
+#print (distmat)
+
 time_4 = time.time() - time_base - time_1 - time_2 - time_3
-print(4)
-#print pred
+#print(4)
 
 disttot, path = compute_path(pred, strt, end)
 time_5 = time.time() - time_base - time_1 - time_2 - time_3 - time_4
-print(5)
+#print(5)
 
 plot_points(rfile, inds, path)
 time_6 = time.time() - time_base - time_1 - time_2 - time_3 - time_4 - time_5
-print(6)
-print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
-
-print(disttot)
+#print(6)
+print ('tider for resp. uppgift')
+print (time_1, time_2, time_3, time_4, time_5, time_6, time_base)
+print ('Total tid:')
+print (disttot)
 #print(path)
 print('klar')
 
