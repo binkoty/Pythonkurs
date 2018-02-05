@@ -91,7 +91,6 @@ def plot_points(coord_list, connections, path):
     #print 'bara plt.show kvar'
     plt.show()
 
-#uppgift2
 
 def construct_graph_connections(coord_list, radius):
 
@@ -224,39 +223,39 @@ r = 0.005
 rfile = read_coordinate_file('HungaryCities.txt')
 
 time_1 = time.time() - time_base
-print 1
+print(1)
 
 dists, inds = construct_fast_graph_connections(rfile, r)
 
-print 2
+print(2)
 
 #dists, inds = construct_graph_connections(rfile, r)
-time_2 = time.time() - time_base
+time_2 = time.time() - time_base - time_1
 
 #print (dists)
 
 smat = construct_graph(dists, inds, len(rfile))
 #smat2 = construct_graph(dists2, inds2, len(rfile))
-time_3 = time.time() - time_base
+time_3 = time.time() - time_base - time_1 - time_2
 #print smat
-print 3
+print(3)
 
 distmat, pred = short_path(smat)
-time_4 = time.time() - time_base
-print 4
+time_4 = time.time() - time_base - time_1 - time_2 - time_3
+print(4)
 #print pred
 
 disttot, path = compute_path(pred, strt, end)
-time_5 = time.time() - time_base
-print 5
+time_5 = time.time() - time_base - time_1 - time_2 - time_3 - time_4
+print(5)
 
 plot_points(rfile, inds, path)
-time_6 = time.time() - time_base
-print 6
-#print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
+time_6 = time.time() - time_base - time_1 - time_2 - time_3 - time_4 - time_5
+print(6)
+print(time_1, time_2, time_3, time_4, time_5, time_6, time_base)
 
-print disttot
-print path
-print 'klar'
+print(disttot)
+#print(path)
+print('klar')
 
 
