@@ -6,6 +6,9 @@ class hand:
     def __init__ (self):
         self._hand = []
 
+    def generate(self):
+        self._hand =
+
     def add_card(self, amount, deck):
         new_card = deck[random.randint(0, len(deck))]
         self._hand.append(new_card)
@@ -15,4 +18,4 @@ class hand:
             self._hand.remove(self._hand[i])
 
     def show_hand:
-        print (_hand)
+        print (self._hand)
