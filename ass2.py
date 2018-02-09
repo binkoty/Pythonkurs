@@ -1,4 +1,5 @@
 import random
+suits = ['h','c','d','s']
 
 class PlayingCard():
     def __init__(self):
@@ -41,13 +42,11 @@ class AceCard (Playingcard):
     def give_value(self):
         print (self.card[0])
 
-class Suit
-
 class Deck:
     def __init__(self):
         self.deck = []
         while len(deck) < 52:
-            for
+            for suit in suits:
 
 
 class Hand:
