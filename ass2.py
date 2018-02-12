@@ -1,79 +1,130 @@
-import random
-suits = ['h','c','d','s']
+SUITS = ['h','c','d','s']
 
 class PlayingCard():
     def __init__(self):
+        pass
 
     def give_value(self):
         raise NotImplementedError("Missing give_value implementation")
 
-class NumberedCard (Playingcard):
+
+class NumberedCard (PlayingCard):
     def __init__(self, value, suit):
+        self.value = value
+        self.suit = suit
         self.card = (value, suit)
 
     def give_value(self):
-        print (self.card[0])
+        return (self.value)
 
-class JackCard (Playingcard):
+    def give_card(self):
+        return (self.card)
+
+    def give_suit(self):
+        return (self.suit)
+
+class JackCard (PlayingCard):
     def __init__(self, suit):
+        self.value = 11
+        self.suit = suit
         self.card = (11, suit)
 
     def give_value(self):
-        print (self.card[0])
+        return (self.value)
 
-class QueenCard (Playingcard):
+    def give_card(self):
+        return (self.card)
+
+class QueenCard (PlayingCard):
     def __init__(self, suit):
+        self.value = 12
+        self.suit = suit
         self.card = (12, suit)
 
     def give_value(self):
-        print (self.card[0])
+        return (self.value)
 
-class KingCard (Playingcard):
+    def give_card(self):
+        return (self.card)
+
+class KingCard (PlayingCard):
     def __init__(self, suit):
+        self.value = 13
+        self.suit = suit
         self.card = (13, suit)
 
     def give_value(self):
-        print (self.card[0])
+        return (self.value)
 
-class AceCard (Playingcard):
+    def give_card(self):
+        return (self.card)
+
+class AceCard (PlayingCard):
     def __init__(self, suit):
+        self.value = 14
+        self.suit = suit
         self.card = (14, suit)
 
     def give_value(self):
-        print (self.card[0])
+        return (self.value)
+
+    def give_card(self):
+        return (self.card)
+
 
 class Deck:
     def __init__(self):
         self.deck = []
-        while len(deck) < 52:
-            for suit in suits:
+        for suit in SUITS:
+            for val in range(2,11):
+                self.deck.append(NumberedCard(val,suit))
+            self.deck.append(JackCard(suit))
+            self.deck.append(QueenCard(suit))
+            self.deck.append(KingCard(suit))
+            self.deck.append(AceCard(suit))
+
+    def show(self):
+        for card in self.deck:
+            print (card.give_card())
+
+    def give_size(self):
+        return (len(self.deck))
+
+    def draw_top(self):
+        topcard = self.deck[0]
+        self.deck.remove(topcard)
+        return topcard
 
 
 class Hand:
     def __init__ (self):
         self.hand = []
 
-    def generate(self, handsize, deck):
-        for element in handsize:
-            self.hand.append(deck[random.randint(0, len(deck))])
-
-    def add_card(self, amount, deck):
-        new_card = deck[random.randint(0, len(deck))]
-        self.hand.append(new_card)
-        deck.remove(new_card)
+    def draw(self, amnt, deck):
+        for size in range(0,amnt):
+            self.hand.append(deck.draw_top())
 
     def droppingcards(self, index):
         for i in index:
             self.hand.remove(self.hand[i])
 
-    def show_hand(self):
-        print (self.hand)
+    def show(self):
+        for card in self.hand:
+            print (card.give_card())
 
 
+deck1 = Deck()
 
+vhand = Hand()
 
-viktor = hand()
+vhand.show()
 
-viktor.generate()
+vhand.draw(5,deck1)
 
-viktor.showhand
+print ('kort i hand')
+
+vhand.show()
+
+print ('kvar i decket')
+
+deck1.show()
