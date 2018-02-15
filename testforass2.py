@@ -3,8 +3,7 @@ import random
 SUITS = ['h','c','d','s']
 
 
-class Suits(enum.Enum):         # kanske intenum?
-    def __init__(self):
+class Suits(enum.IntEnum):
         Clubs = 1
         Diamonds = 2
         Hearts = 3
@@ -41,9 +40,8 @@ class NumberedCard (PlayingCard):
         else:
             return self.value < other.value
 
-kort1 < kort2
-
-__lt__(kort1,kort2)
+    def __str__(self):
+        return "(" + str(self.value) + str(self.suit) + ")"
 
 
 class JackCard (PlayingCard):
@@ -64,6 +62,9 @@ class JackCard (PlayingCard):
         else:
             return self.value < other.value
 
+    def __str__(self):
+        return "(" + str(self.value) + str(self.suit) + ")"
+
 class QueenCard (PlayingCard):
     def __init__(self, suit):
         self.value = 12
@@ -81,6 +82,9 @@ class QueenCard (PlayingCard):
             return self.suit < other.suit
         else:
             return self.value < other.value
+
+    def __str__(self):
+        return "(" + str(self.value) + str(self.suit) + ")"
 
 class KingCard (PlayingCard):
     def __init__(self, suit):
@@ -100,6 +104,9 @@ class KingCard (PlayingCard):
         else:
             return self.value < other.value
 
+    def __str__(self):
+        return "(" + str(self.value) + str(self.suit) + ")"
+
 class AceCard (PlayingCard):
     def __init__(self, suit):
         self.value = 14
@@ -118,12 +125,15 @@ class AceCard (PlayingCard):
         else:
             return self.value < other.value
 
+    def __str__(self):
+        return "(" + str(self.value) + str(self.suit) + ")"
+
 
 class Deck:
     def __init__(self):
         self.deck = []
 
-        for suit in SUITS:
+        for suit in Suits:
             for val in range(2,11):
                 self.deck.append(NumberedCard(val,suit))
             self.deck.append(JackCard(suit))
@@ -133,7 +143,6 @@ class Deck:
 
     def shuffle(self):
         random.shuffle(self.deck)
-        print(self.deck)
 
     def show(self):
         for card in self.deck:
@@ -156,21 +165,8 @@ class Hand:
         for size in range(0,amnt):
             self.hand.append(deck.draw_top())
 
-
     def sort(self):
-        ord = []
-        for card in self.hand:
-            ord.append(card.give_card())
-            
-        print(ord)
-#        for i, size in enumerate(ord):
- #           for j, size2 in enumerate(ord):
-  #              if size != size2:
-   #                 if size > size2:
-
-
-
-#        sorted(self.hand)
+        self.hand = sorted(self.hand)
 
     def droppingcards(self, index):
         for i in index:
@@ -181,22 +177,24 @@ class Hand:
             print (card.give_card())
 
 
+def PokerHand:
+
+
+
 deck1 = Deck()
 
 deck1.shuffle()
 
+deck1.show()
+
 vhand = Hand()
 
-#vhand.show()
+vhand.show()
 
-vhand.draw(5,deck1)
-
-
+vhand.draw(15,deck1)
 
 print ('kort i hand')
 vhand.sort()
 vhand.show()
 
 #print ('kvar i decket')
-
-#deck1.show()
