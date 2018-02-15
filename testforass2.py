@@ -95,10 +95,10 @@ class KingCard (PlayingCard):
         self.card = (13, suit)
 
     def give_value(self):
-        return (self.value)
+        return self.value
 
     def give_card(self):
-        return (self.card)
+        return self.card
 
     def __lt__(self, other):
         if self.value == other.value:
@@ -179,7 +179,7 @@ class Hand:
             print (card.give_card())
 
 
-def PokerHand:
+class PokerHand:
 
     def check_straight_flush(cards):
         """
