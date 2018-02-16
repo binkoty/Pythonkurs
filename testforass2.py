@@ -188,6 +188,10 @@ class Hand():
             self.currentcard += 1
             return self.hand[self.currentcard - 1]
 
+    def __add__(self, other):
+        for card in self.hand:
+            other.hand.append[card]
+
     def draw(self, amnt, deck):
         for size in range(0,amnt):
             self.hand.append(deck.draw_top())
@@ -206,12 +210,13 @@ class Hand():
     def best_poker_hand(self, cards):
         self.check_pairs(cards)
 
-    def check_pairs(cards):
+    def check_pairs(self, cards):
 
-        vals =
+        vals = [(c.give_value, c.suit) for c in cards.hand + self.hand]
+        print(vals)
         cnt = Counter()
-        for n, card in enumerate(cards):
-            cnt[card[n]] += 1
+        for card in (vals):
+            cnt[card[0]] += 1
         print (cnt)
 
 class PokerHand:
@@ -236,12 +241,12 @@ class BestPokerHand:
             cnt[card[n]] += 1
         print (cnt)
 
-    def check_straight(cards):
+    def check_straight(self, cards):
 
         vals = [(c.give_value(), c.suit) for c in cards] \
                + [(1, c.suit) for c in cards if c.give_value() == 14]
 
-    def check_straight_flush(cards):
+    def check_straight_flush(self, cards):
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
 
