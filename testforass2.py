@@ -203,20 +203,28 @@ class Hand():
         for card in self.hand:
             print (card.give_card())
 
-
+    def best_poker_hand(self):
+        pass
 
 class PokerHand:
 
-    def data(self):
-        self.handvalue = []
+    def __init__(self, kindval):
+        self.kindval = kindval
+        self.cardval = self
+
+
+
+class BestPokerHand:
 
     def check_pairs(cards):
         cnt = Counter()
         for valuecard in [cards]:
             cnt[value] += 1
 
-    def straight(cards):
+    def check_straight(cards):
 
+        vals = [(c.give_value(), c.suit) for c in cards] \
+               + [(1, c.suit) for c in cards if c.give_value() == 14]
 
     def check_straight_flush(cards):
         """
@@ -280,8 +288,7 @@ vhand.show()
 
 #print (vhand.hand[0])
 
-print (PokerHand.check_full_house(vhand))
-
+print (HandValue.flush)
 
 
 #print ('kvar i decket')
