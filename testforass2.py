@@ -212,12 +212,31 @@ class Hand():
 
     def check_pairs(self, cards):
 
-        vals = [(c.give_value, c.suit) for c in cards.hand + self.hand]
+        vals = [(c.value, c.suit) for c in cards.hand + self.hand]
         print(vals)
         cnt = Counter()
-        for card in (vals):
-            cnt[card[0]] += 1
+       # for card in (vals):
+       #     for c in vals:
+       #         if card[0] == c[0]:
+       #             print ('hej')
+       #     cnt[card[0]] += 1
+       # print (cnt)
+
+        for c in vals:
+            cnt[c[0]] += 1
         print (cnt)
+        # Find the card ranks that have at least a pair
+        twoval = [i[0] for i in cnt.items() if i[1] >= 2]
+        twoval.sort()
+        suits = []
+
+        for n in twoval:
+            for j in vals:
+                if n == j[0]:
+                    suits.append(j[1])
+        print (suits)
+
+        #return twoval, suits
 
 class PokerHand:
 
