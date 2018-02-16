@@ -203,23 +203,38 @@ class Hand():
         for card in self.hand:
             print (card.give_card())
 
-    def best_poker_hand(self):
-        pass
+    def best_poker_hand(self, cards):
+        self.check_pairs(cards)
+
+    def check_pairs(cards):
+
+        vals =
+        cnt = Counter()
+        for n, card in enumerate(cards):
+            cnt[card[n]] += 1
+        print (cnt)
 
 class PokerHand:
 
-    def __init__(self, kindval):
-        self.kindval = kindval
-        self.cardval = self
+    def __init__(self, cardval, suit, type):             #cardval = [highestcard1, hc2]
+        self.kindval = type
+        self.cardval = cardval
+        self.suit = suit
+        self.val = [self.kindval, self.cardval, self.suit]
 
+    def __lt__(self, other):
+        for n in range(0,len(self.val)):
+            if self.val[n] < other.val[n]:
+                return self.val[n] < other.val[n]
 
 
 class BestPokerHand:
 
     def check_pairs(cards):
         cnt = Counter()
-        for valuecard in [cards]:
-            cnt[value] += 1
+        for n, card in enumerate(cards):
+            cnt[card[n]] += 1
+        print (cnt)
 
     def check_straight(cards):
 
@@ -269,26 +284,28 @@ class BestPokerHand:
                     return three, two
 
 
+
 deck1 = Deck()
 
 deck1.shuffle()
 
-deck1.show()
+#deck1.show()
 
 vhand = Hand()
 
-vhand.show()
-
-vhand.draw(5,deck1)
-
-print ('kort i hand')
+vhand.draw(2,deck1)
+board = Hand()
+board.draw(5, deck1)
+print('hand')
 vhand.sort()
 vhand.show()
-
+print ('board')
+board.sort()
+board.show()
+vhand.best_poker_hand(board)
 
 #print (vhand.hand[0])
 
-print (HandValue.flush)
 
 
 #print ('kvar i decket')
