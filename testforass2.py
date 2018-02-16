@@ -11,6 +11,19 @@ class Suits(enum.IntEnum):
         Hearts = 3
         Spades = 4
 
+class HandValue(enum.IntEnum):
+    high_card = 0
+    pair = 1
+    two_pair = 2
+    three_of_a_kind = 3
+    straight = 4
+    flush = 5
+    full_house = 6
+    four_of_a_kind = 7
+    straight_flush = 8
+    royal_flush = 9
+
+
 
 class PlayingCard():
     def __init__(self):
@@ -159,9 +172,21 @@ class Deck:
         return topcard
 
 
-class Hand:
+class Hand():
     def __init__ (self):
         self.hand = []
+        self.currentcard = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+
+        if self.currentcard == len(self.hand):
+            raise StopIteration
+        else:
+            self.currentcard += 1
+            return self.hand[self.currentcard - 1]
 
     def draw(self, amnt, deck):
         for size in range(0,amnt):
@@ -179,7 +204,19 @@ class Hand:
             print (card.give_card())
 
 
+
 class PokerHand:
+
+    def data(self):
+        self.handvalue = []
+
+    def check_pairs(cards):
+        cnt = Counter()
+        for valuecard in [cards]:
+            cnt[value] += 1
+
+    def straight(cards):
+
 
     def check_straight_flush(cards):
         """
@@ -234,10 +271,17 @@ vhand = Hand()
 
 vhand.show()
 
-vhand.draw(15,deck1)
+vhand.draw(5,deck1)
 
 print ('kort i hand')
 vhand.sort()
 vhand.show()
+
+
+#print (vhand.hand[0])
+
+print (PokerHand.check_full_house(vhand))
+
+
 
 #print ('kvar i decket')
