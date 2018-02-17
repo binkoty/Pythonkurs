@@ -208,68 +208,38 @@ class Hand():
             print (card.give_card())
 
     def best_poker_hand(self, cards):
-        self.type_val = HandValue.high_card
-        poker_hands = []
-
+        self.poker_hand = PokerHand()
+        self.poker_hand.type
         pair_vals = self.check_pairs(cards)
-
 
     def check_pairs(self, cards):
 
         vals = [(c.value, c.suit) for c in cards.hand + self.hand]
         print(vals)
         cnt = Counter()
-       # for card in (vals):
-       #     for c in vals:
-       #         if card[0] == c[0]:
-       #             print ('hej')
-       #     cnt[card[0]] += 1
-       # print (cnt)
+        # for card in (vals):
+        #     for c in vals:
+        #         if card[0] == c[0]:
+        #             print ('hej')
+        #     cnt[card[0]] += 1
+        # print (cnt)
 
         for c in vals:
             cnt[c[0]] += 1
-        print (cnt)
+        print(cnt)
         # Find the card ranks that have at least a pair
         twoval = [i[0] for i in cnt.items() if i[1] >= 2]
         twoval.sort()
         suits = []
-
 
         for n in twoval:
             self.type_val = HandValue.pair
             for j in vals:
                 if n == j[0]:
                     suits.append(j[1])
-        #print (suits)
+        # print (suits)
 
         return twoval
-
-class PokerHand:
-
-    def __init__(self, cardval, suit, type):             #cardval = [highestcard1, hc2]
-        self.kindval = type
-        self.cardval = cardval
-        self.suit = suit
-        self.val = [self.kindval, self.cardval, self.suit]
-
-    def __lt__(self, other):
-        for n in range(0,len(self.val)):
-            if self.val[n] < other.val[n]:
-                return self.val[n] < other.val[n]
-
-
-class BestPokerHand:
-
-    def check_pairs(cards):
-        cnt = Counter()
-        for n, card in enumerate(cards):
-            cnt[card[n]] += 1
-        print (cnt)
-
-    def check_straight(self, cards):
-
-        vals = [(c.give_value(), c.suit) for c in cards] \
-               + [(1, c.suit) for c in cards if c.give_value() == 14]
 
     def check_straight_flush(self, cards):
         """
@@ -312,6 +282,37 @@ class BestPokerHand:
             for two in reversed(twos):
                 if two != three:
                     return three, two
+
+
+
+class PokerHand:
+
+    def __init__(self, cardval, suit):             #cardval = [highestcard1, hc2]
+        self.type = HandValue.high_card
+        self.suit =
+        self.val = []
+        self.val.append(self.type) = [self.type, self.cardval, self.suit]
+
+    def __lt__(self, other):
+        for n in range(0,len(self.val)):
+            if self.val[n] < other.val[n]:
+                return self.val[n] < other.val[n]
+
+
+
+class BestPokerHand:
+
+    def check_pairs(cards):
+        cnt = Counter()
+        for n, card in enumerate(cards):
+            cnt[card[n]] += 1
+        print (cnt)
+
+    def check_straight(self, cards):
+
+        vals = [(c.give_value(), c.suit) for c in cards] \
+               + [(1, c.suit) for c in cards if c.give_value() == 14]
+
 
 
 
