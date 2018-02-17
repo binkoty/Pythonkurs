@@ -208,31 +208,33 @@ class Hand():
             print (card.give_card())
 
     def best_poker_hand(self, cards):
-        self.poker_hand = PokerHand()
-        self.poker_hand.type
-        pair_vals = self.check_pairs(cards)
+        self.all_av_cards = cards + self.hand
+        self.poker_hands = []
+        self.check_pairs(self.all_av_cards)
+        self.check_straight_flush(self.all_av_cards)
+        for x in self.poker_hands:
+            x.show()
+
 
     def check_pairs(self, cards):
 
-        vals = [(c.value, c.suit) for c in cards.hand + self.hand]
-        print(vals)
+        vals = [(c.value, c.suit) for c in cards]
+        #print(vals)
         cnt = Counter()
-        for c in vals:
-            cnt[c[0]] += 1
-        print(cnt)
+        for c in cards:
+            cnt[c.value] += 1
+        #print(cnt)
         # Find the card ranks that have at least a pair
         twoval = [i[0] for i in cnt.items() if i[1] >= 2]
         twoval.sort()
-        suits = []
 
+
+        found_pairs = False
         for n in twoval:
-            self.type_val = HandValue.pair
-            for j in vals:
-                if n == j[0]:
-                    suits.append(j[1])
+            found_pairs = True
         # print (suits)
-
-        return twoval
+        if found_pairs:
+            self.poker_hands.append (PokerHand(HandValue.pair, twoval))
 
     def check_straight_flush(self, cards):
         """
@@ -251,7 +253,7 @@ class Hand():
                     found_straight = False
                     break
             if found_straight:
-                return c.give_value()
+                self.poker_hands.append (PokerHand(HandValue.straight_flush, c.value))
 
     def check_full_house(cards):
         """
@@ -280,18 +282,19 @@ class Hand():
 
 class PokerHand:
 
-    def __init__(self, cardval, suit):             #cardval = [highestcard1, hc2]
-        self.type = HandValue.high_card
-        self.suit =
+    def __init__(self, type, cards):             #cardval = [highestcard1, hc2]
+        self.type = HandValue(type)
+        self.card_val = cards
         self.val = []
-        self.val.append(self.type) = [self.type, self.cardval, self.suit]
+        self.val = [self.type, self.card_val]
 
     def __lt__(self, other):
         for n in range(0,len(self.val)):
             if self.val[n] < other.val[n]:
                 return self.val[n] < other.val[n]
 
-
+    def show(self):
+        print (self.type, self.card_val)
 
 class BestPokerHand:
 
@@ -326,10 +329,18 @@ vhand.show()
 print ('board')
 board.sort()
 board.show()
-vhand.best_poker_hand(board)
+vhand.best_poker_hand(board.hand)
+#vhand.poker_hand.show()
+ahand = Hand()
+ahand.draw(2, deck1)
+ahand.best_poker_hand(board.hand)
+#ahand.poker_hand.show()
+
+#if ahand.poker_hand < vhand.poker_hand:
+#    print ('devetdu')
+
 
 #print (vhand.hand[0])
-
 
 
 #print ('kvar i decket')
