@@ -208,7 +208,11 @@ class Hand():
             print (card.give_card())
 
     def best_poker_hand(self, cards):
-        self.check_pairs(cards)
+        self.type_val = HandValue.high_card
+        poker_hands = []
+
+        pair_vals = self.check_pairs(cards)
+
 
     def check_pairs(self, cards):
 
@@ -230,13 +234,15 @@ class Hand():
         twoval.sort()
         suits = []
 
+
         for n in twoval:
+            self.type_val = HandValue.pair
             for j in vals:
                 if n == j[0]:
                     suits.append(j[1])
-        print (suits)
+        #print (suits)
 
-        #return twoval, suits
+        return twoval
 
 class PokerHand:
 
