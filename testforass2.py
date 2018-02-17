@@ -217,13 +217,6 @@ class Hand():
         vals = [(c.value, c.suit) for c in cards.hand + self.hand]
         print(vals)
         cnt = Counter()
-        # for card in (vals):
-        #     for c in vals:
-        #         if card[0] == c[0]:
-        #             print ('hej')
-        #     cnt[card[0]] += 1
-        # print (cnt)
-
         for c in vals:
             cnt[c[0]] += 1
         print(cnt)
