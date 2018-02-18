@@ -3,10 +3,10 @@ import random
 from collections import Counter
 
 class Suits(enum.IntEnum):
-        Clubs = 1
-        Diamonds = 2
-        Hearts = 3
-        Spades = 4
+    Clubs = 1
+    Diamonds = 2
+    Hearts = 3
+    Spades = 4
 
 class HandValue(enum.IntEnum):
     high_card = 0
