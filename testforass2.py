@@ -21,8 +21,6 @@ class HandValue(enum.IntEnum):
     royal_flush = 9
 
 
-
-
 class PlayingCard():
     def __init__(self):
         pass
@@ -185,10 +183,6 @@ class Hand():
             self.currentcard += 1
             return self.hand[self.currentcard - 1]
 
-    def __add__(self, other):
-        for card in self.hand:
-            other.hand.append[card]
-
     def draw(self, amnt, deck):
         for size in range(0,amnt):
             self.hand.append(deck.draw_top())
@@ -209,12 +203,21 @@ class Hand():
         self.all_av_cards = cards + self.hand
         self.poker_hands = []
 
+        self.hand.sort()
+        self.poker_hands += [PokerHand(HandValue.high_card, [self.hand[1].value, self.hand[1].suit])]       #add high card pokerhand
+
         self.poker_hands += [Hand.check_pair(self.all_av_cards)]
         self.poker_hands += [Hand.check_two_pair(self.all_av_cards)]
-        self.poker_hands += [Hand.check_straight_flush(self.all_av_cards)]
+        self.poker_hands += [Hand.check_straight(self.all_av_cards)]
+        self.poker_hands += [Hand.check_flush(self.all_av_cards)]
+        self.poker_hands += [Hand.check_straight_flush(self.all_av_cards)]          #check for pokerhands
         self.poker_hands += [Hand.check_full_house(self.all_av_cards)]
         self.poker_hands += [Hand.check_three_kind(self.all_av_cards)]
+        self.poker_hands += [Hand.check_four_kind(self.all_av_cards)]
+        self.poker_hands += [Hand.check_royal_sflush(self.all_av_cards)]
 
+        self.best_hand = max(self.poker_hands)
+        return self.best_hand
 
     def show_poker_hand(self):
         for x in self.poker_hands:
@@ -260,25 +263,58 @@ class Hand():
         if found_three_kind:
             return PokerHand(HandValue.three_kind, threeval)
 
+    def check_four_kind(cards):
+
+        cnt = Counter()
+        for c in cards:
+            cnt[c.value] += 1
+
+        fourval = [i[0] for i in cnt.items() if i[1] >= 4]
+        fourval.sort()
+
+        found_four_kind = False
+        if fourval:
+            found_four_kind = True
+
+        if found_four_kind:
+            return PokerHand(HandValue.four_kind, fourval)
+
     def check_straight(cards):
         """
-        Checks for the best straight flush in a list of cards (may be more than just 5)
+        Checks for the best straight in a list of cards (may be more than just 5)
 
         :param cards: A list of playing cards.
         :return: None if no straight flush is found, else the value of the top card.
         """
 
-        vals = [(c.give_value(), c.suit) for c in cards] \
-               + [(1, c.suit) for c in cards if c.give_value() == 14]  # Add the aces!
+        vals = [(c.value) for c in cards] \
+               + [(1) for c in cards if c.value == 14]  #adding aces
         for c in reversed(cards):  # Starting point (high card)
+
             # Check if we have the value - k in the set of cards:
             found_straight = True
             for k in range(1, 5):
-                if (c.give_value() - k, c.suit) not in vals:
+                if (c.value - k) not in vals:
                     found_straight = False
                     break
             if found_straight:
-                return PokerHand(HandValue.straight_flush, c.value)
+                return PokerHand(HandValue.straight, [c.value])
+
+
+    def check_flush(cards):
+
+        cnt = Counter()
+        for c in cards:
+            cnt[c.suit] += 1
+
+        flush = [i[0] for i in cnt.items() if i[1] >= 5]
+
+        found_flush = False
+        if flush:
+            found_flush = True
+
+        if found_flush:
+            return PokerHand(HandValue.flush, flush)
 
 
     def check_straight_flush(cards):
@@ -298,7 +334,7 @@ class Hand():
                     found_straight = False
                     break
             if found_straight:
-                return PokerHand(HandValue.straight_flush,c.value)
+                return PokerHand(HandValue.straight_flush, [c.value])
 
 
     def check_full_house(cards):
@@ -324,6 +360,13 @@ class Hand():
                 if two != three:
                     return PokerHand(HandValue.full_house, [three, two])
 
+    def check_royal_sflush(cards):
+
+        x = Hand.check_straight_flush(cards)
+        if x:
+            if x.card_val == [14]:
+                return PokerHand(HandValue.royal_flush, x.card_val)
+
 
 
 class PokerHand:
@@ -335,43 +378,56 @@ class PokerHand:
         self.val = [self.type, self.card_val]
 
     def __lt__(self, other):
-        for n in range(0,len(self.val)):
-            if self.val[n] < other.val[n]:
-                return self.val[n] < other.val[n]
+        if self:
+            if other:
+                for n in range(0,len(self.val)):
+                    if self.val[n] < other.val[n]:
+                        return self.val[n] < other.val[n]
 
     def show(self):
         print (self.type, self.card_val)
 
 
 deck1 = Deck()
-
 deck1.shuffle()
 
-#deck1.show()
-
 vhand = Hand()
-
 vhand.draw(2,deck1)
-board = Hand()
-board.draw(5, deck1)
-print('hand')
-vhand.sort()
-vhand.show()
-print ('board')
-board.sort()
-board.show()
-vhand.best_poker_hand(board.hand)
-vhand.show_poker_hand()
+
 ahand = Hand()
 ahand.draw(2, deck1)
-#ahand.best_poker_hand(board.hand)
-#ahand.poker_hand.show()
 
-#if ahand.poker_hand < vhand.poker_hand:
-#    print ('devetdu')
+board = Hand()
+board.draw(5, deck1)
 
+print('Viktors hand')
+vhand.sort()
+vhand.show()
+print ('\n')
 
-#print (vhand.hand[0])
+print ('Affes hand')
+ahand.show()
+print ('\n')
 
+print ('Board')
+board.sort()
+board.show()
+print ('\n')
 
-#print ('kvar i decket')
+vhand.best_poker_hand(board.hand)
+ahand.best_poker_hand(board.hand)
+
+print ('Virres best p-hand:')
+vhand.best_hand.show()
+print ('\n')
+print ('Affes best p-hand:')
+ahand.best_hand.show()
+print ('\n')
+
+print ('Winner:')
+if vhand.best_hand < ahand.best_hand:
+    print ('Affe')
+elif ahand.best_hand < vhand.best_hand:
+    print ('Viktor')
+else:
+    print ('Its a draw')
