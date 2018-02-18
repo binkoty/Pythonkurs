@@ -2,9 +2,6 @@ import enum
 import random
 from collections import Counter
 
-#SUITS = ['h','c','d','s']
-
-
 class Suits(enum.IntEnum):
         Clubs = 1
         Diamonds = 2
@@ -15,13 +12,14 @@ class HandValue(enum.IntEnum):
     high_card = 0
     pair = 1
     two_pair = 2
-    three_of_a_kind = 3
+    three_kind = 3
     straight = 4
     flush = 5
     full_house = 6
-    four_of_a_kind = 7
+    four_kind = 7
     straight_flush = 8
     royal_flush = 9
+
 
 
 
@@ -31,7 +29,6 @@ class PlayingCard():
 
     def give_value(self):
         raise NotImplementedError("Missing give_value implementation")
-
 
 
 class NumberedCard (PlayingCard):
@@ -208,35 +205,83 @@ class Hand():
             print (card.give_card())
 
     def best_poker_hand(self, cards):
+
         self.all_av_cards = cards + self.hand
         self.poker_hands = []
-        self.check_pairs(self.all_av_cards)
-        self.check_straight_flush(self.all_av_cards)
+
+        self.poker_hands += [Hand.check_pair(self.all_av_cards)]
+        self.poker_hands += [Hand.check_two_pair(self.all_av_cards)]
+        self.poker_hands += [Hand.check_straight_flush(self.all_av_cards)]
+        self.poker_hands += [Hand.check_full_house(self.all_av_cards)]
+        self.poker_hands += [Hand.check_three_kind(self.all_av_cards)]
+
+
+    def show_poker_hand(self):
         for x in self.poker_hands:
-            x.show()
+            if x:
+                x.show()
 
+    def check_pair(cards):
 
-    def check_pairs(self, cards):
-
-        vals = [(c.value, c.suit) for c in cards]
-        #print(vals)
         cnt = Counter()
         for c in cards:
             cnt[c.value] += 1
-        #print(cnt)
-        # Find the card ranks that have at least a pair
+
         twoval = [i[0] for i in cnt.items() if i[1] >= 2]
         twoval.sort()
 
+        found_pair = False
+        if twoval:
+            found_pair = True
 
-        found_pairs = False
-        for n in twoval:
-            found_pairs = True
-        # print (suits)
-        if found_pairs:
-            self.poker_hands.append (PokerHand(HandValue.pair, twoval))
+        if found_pair:
+            return PokerHand(HandValue.pair, twoval)
 
-    def check_straight_flush(self, cards):
+
+    def check_two_pair(cards):
+        x = Hand.check_pair(cards)
+        if x:
+            if len(x.card_val) > 1:
+                return PokerHand(HandValue.two_pair, x.card_val)
+
+    def check_three_kind(cards):
+
+        cnt = Counter()
+        for c in cards:
+            cnt[c.value] += 1
+
+        threeval = [i[0] for i in cnt.items() if i[1] >= 3]
+        threeval.sort()
+
+        found_three_kind = False
+        if threeval:
+            found_three_kind = True
+
+        if found_three_kind:
+            return PokerHand(HandValue.three_kind, threeval)
+
+    def check_straight(cards):
+        """
+        Checks for the best straight flush in a list of cards (may be more than just 5)
+
+        :param cards: A list of playing cards.
+        :return: None if no straight flush is found, else the value of the top card.
+        """
+
+        vals = [(c.give_value(), c.suit) for c in cards] \
+               + [(1, c.suit) for c in cards if c.give_value() == 14]  # Add the aces!
+        for c in reversed(cards):  # Starting point (high card)
+            # Check if we have the value - k in the set of cards:
+            found_straight = True
+            for k in range(1, 5):
+                if (c.give_value() - k, c.suit) not in vals:
+                    found_straight = False
+                    break
+            if found_straight:
+                return PokerHand(HandValue.straight_flush, c.value)
+
+
+    def check_straight_flush(cards):
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
 
@@ -253,7 +298,8 @@ class Hand():
                     found_straight = False
                     break
             if found_straight:
-                self.poker_hands.append (PokerHand(HandValue.straight_flush, c.value))
+                return PokerHand(HandValue.straight_flush,c.value)
+
 
     def check_full_house(cards):
         """
@@ -276,7 +322,7 @@ class Hand():
         for three in reversed(threes):
             for two in reversed(twos):
                 if two != three:
-                    return three, two
+                    return PokerHand(HandValue.full_house, [three, two])
 
 
 
@@ -295,21 +341,6 @@ class PokerHand:
 
     def show(self):
         print (self.type, self.card_val)
-
-class BestPokerHand:
-
-    def check_pairs(cards):
-        cnt = Counter()
-        for n, card in enumerate(cards):
-            cnt[card[n]] += 1
-        print (cnt)
-
-    def check_straight(self, cards):
-
-        vals = [(c.give_value(), c.suit) for c in cards] \
-               + [(1, c.suit) for c in cards if c.give_value() == 14]
-
-
 
 
 deck1 = Deck()
@@ -330,10 +361,10 @@ print ('board')
 board.sort()
 board.show()
 vhand.best_poker_hand(board.hand)
-#vhand.poker_hand.show()
+vhand.show_poker_hand()
 ahand = Hand()
 ahand.draw(2, deck1)
-ahand.best_poker_hand(board.hand)
+#ahand.best_poker_hand(board.hand)
 #ahand.poker_hand.show()
 
 #if ahand.poker_hand < vhand.poker_hand:
