@@ -379,35 +379,3 @@ class PokerHand:
 
     def show(self):
         print (self.type, self.card_val)
-
-
-deck = Deck()
-deck.shuffle()
-
-niclas_hand = Hand()
-viktors_hand = Hand()
-board = Hand()
-
-niclas_hand.draw(1,deck)
-viktors_hand.draw(1,deck)
-niclas_hand.draw(1,deck)
-viktors_hand.draw(1,deck)
-
-board.draw(5,deck)
-
-viktors_hand.best_poker_hand(board.hand)
-niclas_hand.best_poker_hand(board.hand)
-
-print ('board')
-board.show()
-print ('Viktor hand')
-print (viktors_hand)
-print('Linnea hand')
-niclas_hand.show()
-
-if viktors_hand.best_hand < niclas_hand.best_hand:
-    print ('Linnea Vann')
-elif niclas_hand.best_hand < viktors_hand.best_hand:
-    print ('Viktor Vann')
-else:
-    print ('oavgjort lol suits funkar inte')

@@ -6,7 +6,6 @@ from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
 from scipy.spatial import cKDTree, KDTree
-
 import time
 
 
@@ -84,7 +83,7 @@ def plot_points(coord_list, connections, path):
     ax = plt.axes()
     #print (segs)
     #print (segs2)
-    #print (line_segments2)
+    #print (line_segments2)<
     ax.add_collection(line_segments)
     ax.add_collection(line_segments2)
     #print 'bara plt.show kvar'

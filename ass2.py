@@ -14,11 +14,11 @@ class NumberedCard (PlayingCard):
         self.suit = suit
         self.card = (value, suit)
 
+    def __str__(self):
+        return (self.card)
+
     def give_value(self):
         return (self.value)
-
-    def give_card(self):
-        return (self.card)
 
     def give_suit(self):
         return (self.suit)
@@ -85,7 +85,7 @@ class Deck:
 
     def show(self):
         for card in self.deck:
-            print (card.give_card())
+            print (card)
 
     def give_size(self):
         return (len(self.deck))
@@ -110,7 +110,7 @@ class Hand:
 
     def show(self):
         for card in self.hand:
-            print (card.give_card())
+            print (card)
 
 
 deck1 = Deck()

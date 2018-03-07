@@ -6,11 +6,10 @@ from scipy.sparse.csgraph import dijkstra, shortest_path
 from matplotlib.collections import LineCollection
 from scipy.sparse import csr_matrix
 from scipy.spatial import cKDTree, KDTree
-
 import time
 
 
-time_base = time.time()
+
 def read_coordinate_file(filename):
 
                 #read file with coordinates and convert form longitude/latitude to x/y
@@ -99,8 +98,6 @@ def construct_graph_connections(coord_list, radius):
     n = 0
 
     for n, line in enumerate(coord_list):
-        #print (line)
-
         for m, row in enumerate(coord_list):
             diff = line - row
             diff = sqrt(diff[0]**2 + diff[1]**2)
@@ -187,14 +184,6 @@ def construct_graph(data, index, N):
     #print ny
     return ny
 
-
-#def short_path(smatrix):
-#
-#                #create predecessor array
-#    global dist
-#    dist, pred = dijkstra(smatrix,return_predecessors=True)
-#    return dist, pred
-
 def compute_path(prem, strt, end):
     path = []
     disttot = []
@@ -226,12 +215,15 @@ end = 10584
 #r = 0.005      #hungary
 r = 0.0025      #germany
 
+
+time_base = time.time()
 #rfile = read_coordinate_file('SampleCoordinates.txt')
 #rfile = read_coordinate_file('HungaryCities.txt')
 rfile = read_coordinate_file('GermanyCities.txt')
 
+
 time_1 = time.time() - time_base
-#print(1)
+
 
 dists, inds = construct_fast_graph_connections(rfile, r)
 
