@@ -43,7 +43,7 @@ class CardView(QGraphicsView):
         :return: Dictionary of SVG renderers
         """
         all_cards = dict() # Dictionaries let us have convenient mappings between cards and their images
-        for suit_file, suit in zip('HDSC', range(4)): # Check the order of the suits here!!!
+        for suit_file, suit in zip('CDHS', range(1,5)): # Check the order of the suits here!!! //HDSC org
             for value_file, value in zip(['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'], range(2, 15)):
                 file = value_file + suit_file
                 key = (value, suit)  # I'm choosing this tuple to be the key for this dictionary
@@ -82,7 +82,7 @@ class CardView(QGraphicsView):
     def change_cards(self):
         # Add the cards from scratch
         self.scene.clear()
-        for i, card in enumerate(self.model.cards):
+        for i, card in enumerate(self.model.hand):
             # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
             # TODO: YOU MUST CORRECT THE EXPRESSION TO MATCH YOUR PLAYING CARDS!!!
             # TODO: See the __read_cards method for what mapping are used.
@@ -100,7 +100,7 @@ class CardView(QGraphicsView):
             # Place the cards on the default positions
             c.setPos(c.position * self.card_spacing, 0)
             # Sets the opacity of cards if they are marked.
-            c.setOpacity(0.5 if self.model.marked(c.position) else 1.0)
+           # c.setOpacity(0.5 if self.model.marked(c.position) else 1.0)
             self.scene.addItem(c)
 
         self.update_view()
@@ -147,7 +147,7 @@ class HandModel(card_lib.Hand, QObject):
         QObject.__init__(self)
 
         # Additional state needed by the UI, keeping track of the selected cards:
-        self.marked_cards = [False]*len(self.cards)
+        #self.marked_cards = [False]*len(self.hand)
         self.flipped_cards = True
 
     def flip(self):
@@ -165,24 +165,32 @@ class HandModel(card_lib.Hand, QObject):
 
     def clicked_position(self, i):
         # Mark the card as position "i" to be thrown away
-        self.marked_cards[i] = not self.marked_cards[i]
+       # self.marked_cards[i] = not self.marked_cards[i]
         self.data_changed.emit()
-
-    def add_card(self, card):
-        super().add_card(card)
-        self.data_changed.emit()
-
 
 
 # Lets test it out
 app = QApplication(sys.argv)
-hand = HandModel()
+deck = card_lib.Deck()
+deck.shuffle()
+hand1 = HandModel()
+hand1.draw(2,deck)
+hand2 = HandModel()
+hand2.draw(2,deck)
+board = HandModel()
+board.draw(3,deck)
 
-card_view = CardView(hand)
+board_view = CardView(board)
+card_view1 = CardView(hand1)
+card_view2 = CardView(hand2)
 
 # Creating a small demo window to work with, and put the card_view inside:
+
 box = QVBoxLayout()
-box.addWidget(card_view)
+box.addWidget(card_view1)
+box.addWidget(board_view)
+board.flip()
+box.addWidget(card_view2)
 player_view = QGroupBox("Player 1")
 player_view.setLayout(box)
 player_view.show()
