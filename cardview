@@ -1,21 +1,10 @@
-#from PySide.QtCore import *
-#from PySide.QtGui import *
-#from PySide.QtSvg import *
-#from PyQt4.QtCore import *
-#from PyQt4.QtGui import *
-#from PyQt4.QtSvg import *
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 import sys
 import card_lib
-#import pycards as pc
-
-# NOTE: This is just given as an example of how to use CardView.
-# It is expected that you will need to adjust things to make a game out of it.
-# Some things can be removed, other things modified.
-
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
@@ -168,6 +157,16 @@ class HandModel(card_lib.Hand, QObject):
        # self.marked_cards[i] = not self.marked_cards[i]
         self.data_changed.emit()
 
+class Buttons(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.betbutton = QPushButton("bet")
+        #vbox = QVBoxLayout()
+        #vbox.addWidget(button)
+        #self.setLayout(vbox)
+        #self.show()
+
+
 
 # Lets test it out
 app = QApplication(sys.argv)
@@ -179,16 +178,18 @@ hand2 = HandModel()
 hand2.draw(2,deck)
 board = HandModel()
 board.draw(3,deck)
+butt = Buttons()
+
 
 board_view = CardView(board)
 card_view1 = CardView(hand1)
 card_view2 = CardView(hand2)
-
 # Creating a small demo window to work with, and put the card_view inside:
 
 box = QVBoxLayout()
 box.addWidget(card_view1)
 box.addWidget(board_view)
+box.addWidget(butt.betbutton)
 board.flip()
 box.addWidget(card_view2)
 player_view = QGroupBox("Player 1")
