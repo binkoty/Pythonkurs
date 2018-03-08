@@ -160,11 +160,15 @@ class HandModel(card_lib.Hand, QObject):
 class Buttons(QWidget):
     def __init__(self):
         super().__init__()
-        self.betbutton = QPushButton("bet")
-        #vbox = QVBoxLayout()
-        #vbox.addWidget(button)
-        #self.setLayout(vbox)
-        #self.show()
+        self.BetButton = QPushButton("Bet")
+        self.CallButton = QPushButton("Call")
+        self.FoldButton = QPushButton("Fold")
+        self.BetButton.clicked.connect(self.Bet)
+        self.CallButton.clicked.connect(self.Call)
+        self.FoldButton.clicked.connect(self.Fold)
+
+
+    def Bet(self):
 
 
 
@@ -178,7 +182,7 @@ hand2 = HandModel()
 hand2.draw(2,deck)
 board = HandModel()
 board.draw(3,deck)
-butt = Buttons()
+buttons = Buttons()
 
 
 board_view = CardView(board)
@@ -189,7 +193,9 @@ card_view2 = CardView(hand2)
 box = QVBoxLayout()
 box.addWidget(card_view1)
 box.addWidget(board_view)
-box.addWidget(butt.betbutton)
+box.addWidget(buttons.BetButton)
+box.addWidget(buttons.CallButton)
+box.addWidget(buttons.FoldButton)
 board.flip()
 box.addWidget(card_view2)
 player_view = QGroupBox("Player 1")
