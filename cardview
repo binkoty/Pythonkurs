@@ -77,8 +77,6 @@ class CardView(QGraphicsView):
         self.scene.clear()
         for i, card in enumerate(self.model.hand):
             # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
-            # TODO: YOU MUST CORRECT THE EXPRESSION TO MATCH YOUR PLAYING CARDS!!!
-            # TODO: See the __read_cards method for what mapping are used.
             graphics_key = (card.value, card.suit)
             renderer = self.back_card if self.model.flipped(i) else self.all_cards[graphics_key]
             c = CardItem(renderer, i)
@@ -92,8 +90,6 @@ class CardView(QGraphicsView):
 
             # Place the cards on the default positions
             c.setPos(c.position * self.card_spacing, 0)
-            # Sets the opacity of cards if they are marked.
-           # c.setOpacity(0.5 if self.model.marked(c.position) else 1.0)
             self.scene.addItem(c)
 
         self.update_view()
@@ -125,13 +121,60 @@ class CardView(QGraphicsView):
 
 class Game(QObject):
     data_changed = pyqtSignal()
-    active_player = Players()
 
     def __init__(self):
         QObject.__init__(self)
-        active_player = Players(1)
 
+        self.deck = card_lib.Deck()
+        self.deck.shuffle()
 
+        self.player1 = HandModel()
+        self.player1.draw(2, self.deck)
+        self.player2 = HandModel()
+        self.player2.draw(2, self.deck)
+
+        self.board = HandModel()
+        self.board.draw(3, self.deck)
+        self.board.flip()
+
+        self.active_player = self.player1
+
+    def raise_bet(self):
+        self.credits -= 10
+        self.bet += 10
+        self.data_changed.emit()
+
+    def fold(self):
+        self.data_changed.emit()
+        self.check_winner()
+        pass
+
+    def call(self):
+        self.proceed()
+        self.data_changed.emit()
+
+    def proceed(self):
+        if self.active_player == self.player2:
+            self.next_turn()
+        self.active_player = self.player2
+        self.data_changed.emit()
+
+    def next_turn(self):
+        if len(self.board.hand) > 4:
+            self.check_winner()
+        self.active_player = self.player1
+        self.board.draw(1, self.deck)
+
+    def check_winner(self):
+        self.player1.best_poker_hand()
+        self.player2.best_poker_hand()
+
+        if self.player1.best_hand < self.player2.best_hand:
+            print('player2 Vann')
+        elif self.player2.best_hand < self.player1.best_han:
+            print('player1 Vann')
+        else:
+            print('draw, cant compare suits')
 
 # We can extend this class to create a model, which updates the view whenever it has changed.
 # NOTE: You do NOT have to do it this way.
@@ -139,9 +182,8 @@ class Game(QObject):
 # This is just to make a small demo that you can use. You are free to modify
 class HandModel(card_lib.Hand, QObject):
     data_changed = pyqtSignal()
-    active_player = 1
 
-    def __init__(self):
+    def __init__(self, player_name):
         card_lib.Hand.__init__(self)
         QObject.__init__(self)
         self.credits = 100
@@ -149,6 +191,7 @@ class HandModel(card_lib.Hand, QObject):
         self.active = False
         self.flipped_cards = True
         self.bet = 0
+        self.player = player_name
 
     def flip(self):
         # Flips over the cards (to hide them)
@@ -168,13 +211,8 @@ class HandModel(card_lib.Hand, QObject):
     def raise_bet(self):
         self.credits -= 10
         self.bet += 10
-        change_player()
 
-def change_player():
-    if Game.active_player == 2:
-        Game.active_player = 1
-    if Game.active_player == 1:
-        Game.active_player = 2
+
 
 class Buttons(QWidget):
     data_changed = pyqtSignal()
@@ -197,6 +235,7 @@ class Buttons(QWidget):
 # Lets test it out
 app = QApplication(sys.argv)
 
+'''
 deck = card_lib.Deck()
 deck.shuffle()
 hand1 = HandModel()
@@ -205,22 +244,26 @@ hand2 = HandModel()
 hand2.draw(2,deck)
 board = HandModel()
 board.draw(3,deck)
-buttons = Buttons()
 
-board_view = CardView(board)
-card_view1 = CardView(hand1)
-card_view2 = CardView(hand2)
+'''
+
+board_view = CardView(Game.board)
+card_view1 = CardView(Game.hand1)
+card_view2 = CardView(Game.hand2)
 # Creating a small demo window to work with, and put the card_view inside:
 
+
+buttons = Buttons()
+
 box = QVBoxLayout()
-box.addWidget(card_view1)
-box.addWidget(board_view)
+box.addWidget(Game.card_view1)
+box.addWidget(Game.board_view)
 box.addWidget(buttons.RaiseButton)
 box.addWidget(buttons.CallButton)
 box.addWidget(buttons.FoldButton)
-board.flip()
 
-box.addWidget(card_view2)
+
+box.addWidget(Game.card_view2)
 player_view = QGroupBox('player')
 player_view.setLayout(box)
 player_view.show()
