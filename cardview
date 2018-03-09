@@ -66,6 +66,7 @@ class CardView(QGraphicsView):
         # This can, for example, be done by connecting it to a signal.
         # The view can listen to changes:
         cards_model.data_changed.connect(self.change_cards)
+        cards_model.data_changed.connect(self.change_cards)
         # It is completely optional if you want to do it this way, or have some overreaching Player/GameState
         # call the "change_cards" method instead. z
 
@@ -133,57 +134,70 @@ class Game(QObject):
         self.player2 = HandModel()
         self.player2.draw(2, self.deck)
 
+        self.players = [self.player1, self.player2]
+
         self.board = HandModel()
         self.board.draw(3, self.deck)
         self.board.flip()
 
         self.active_player = self.player1
+        self.inactive_player = self.player2
+        self.active_player.flip()
 
     def raise_bet(self):
-        self.credits -= 10
-        self.bet += 10
-        self.data_changed.emit()
+        self.active_player.credits -= 10
+        self.active_player.bet += 10
+        self.active_player.data_changed.emit()
 
     def fold(self):
-        self.data_changed.emit()
+        self.active_player.folded = True
         self.check_winner()
-        pass
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
 
     def call(self):
-        self.proceed()
-        self.data_changed.emit()
+        self.player1.flip()
+        self.player2.flip()
 
-    def proceed(self):
         if self.active_player == self.player2:
             self.next_turn()
         self.active_player = self.player2
-        self.data_changed.emit()
+        self.inactive_player = self.player1
+
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
 
     def next_turn(self):
         if len(self.board.hand) > 4:
             self.check_winner()
+            return
         self.active_player = self.player1
-        self.board.draw(1, self.deck)
+        self.inactive_player = self.player2
+        self.board.draw(1, self.deck)       //bara om det är ny turn wtf gör den
+        self.board.data_changed.emit()
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
+
 
     def check_winner(self):
-        self.player1.best_poker_hand()
-        self.player2.best_poker_hand()
+
+        for n in players:
+            pass
+
+        self.player1.best_poker_hand(self.board.hand)
+        self.player2.best_poker_hand(self.board.hand)
 
         if self.player1.best_hand < self.player2.best_hand:
             print('player2 Vann')
-        elif self.player2.best_hand < self.player1.best_han:
+        elif self.player2.best_hand < self.player1.best_hand:
             print('player1 Vann')
         else:
             print('draw, cant compare suits')
 
-# We can extend this class to create a model, which updates the view whenever it has changed.
-# NOTE: You do NOT have to do it this way.
-# You might find it easier to make a Player-model, or a whole GameState-model instead.
-# This is just to make a small demo that you can use. You are free to modify
 class HandModel(card_lib.Hand, QObject):
     data_changed = pyqtSignal()
 
-    def __init__(self, player_name):
+    def __init__(self):
         card_lib.Hand.__init__(self)
         QObject.__init__(self)
         self.credits = 100
@@ -191,7 +205,7 @@ class HandModel(card_lib.Hand, QObject):
         self.active = False
         self.flipped_cards = True
         self.bet = 0
-        self.player = player_name
+
 
     def flip(self):
         # Flips over the cards (to hide them)
@@ -208,26 +222,25 @@ class HandModel(card_lib.Hand, QObject):
        # self.marked_cards[i] = not self.marked_cards[i]
         self.data_changed.emit()
 
-    def raise_bet(self):
-        self.credits -= 10
-        self.bet += 10
 
 
 
 class Buttons(QWidget):
     data_changed = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, state):
         super().__init__()
         self.RaiseButton = QPushButton("Raise 10€")
         self.CallButton = QPushButton("Call")
         self.FoldButton = QPushButton("Fold")
-        #self.RaiseButton.clicked.connect(self.Raise)
-        #self.CallButton.clicked.connect(self.Call)
-        #self.FoldButton.clicked.connect(self.Fold)
+        self.RaiseButton.clicked.connect(state.raise_bet)
+        self.CallButton.clicked.connect(state.call)
+        self.FoldButton.clicked.connect(state.fold)
+
 
 
     def Raise(self):
+        pass
 
 
 
@@ -246,24 +259,23 @@ board = HandModel()
 board.draw(3,deck)
 
 '''
-
-board_view = CardView(Game.board)
-card_view1 = CardView(Game.hand1)
-card_view2 = CardView(Game.hand2)
+game = Game()
+board_view = CardView(game.board)
+active_player_view = CardView(game.active_player)
+inactive_player_view = CardView(game.inactive_player)
 # Creating a small demo window to work with, and put the card_view inside:
 
 
-buttons = Buttons()
+buttons = Buttons(game)
 
 box = QVBoxLayout()
-box.addWidget(Game.card_view1)
-box.addWidget(Game.board_view)
+box.addWidget(active_player_view)
+box.addWidget(board_view)
 box.addWidget(buttons.RaiseButton)
 box.addWidget(buttons.CallButton)
 box.addWidget(buttons.FoldButton)
+box.addWidget(inactive_player_view)
 
-
-box.addWidget(Game.card_view2)
 player_view = QGroupBox('player')
 player_view.setLayout(box)
 player_view.show()
