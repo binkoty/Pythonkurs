@@ -161,11 +161,14 @@ class Game(QObject):
 
         if self.active_player == self.player2:
             self.next_turn()
-        self.active_player = self.player2
-        self.inactive_player = self.player1
+        else:
+            self.active_player = self.player2
+            self.inactive_player = self.player1
 
         self.player1.data_changed.emit()
         self.player2.data_changed.emit()
+
+
 
     def next_turn(self):
         if len(self.board.hand) > 4:
@@ -173,16 +176,13 @@ class Game(QObject):
             return
         self.active_player = self.player1
         self.inactive_player = self.player2
-        self.board.draw(1, self.deck)       //bara om det är ny turn wtf gör den
+        self.board.draw(1, self.deck)
         self.board.data_changed.emit()
         self.player1.data_changed.emit()
         self.player2.data_changed.emit()
 
 
     def check_winner(self):
-
-        for n in players:
-            pass
 
         self.player1.best_poker_hand(self.board.hand)
         self.player2.best_poker_hand(self.board.hand)

@@ -22,14 +22,28 @@ class HandValue(enum.IntEnum):
 
 
 class PlayingCard():
+    """
+            PlayingCard class containing methods for comparison which are inherited to the different card-classes
+    """
     def __init__(self):
         pass
 
     def give_value(self):
         raise NotImplementedError("Missing give_value implementation")
 
+    def __lt__(self, other):
+        return (self.value, self.suit) < (other.value, other.suit)
+
+    def __eq__(selfs, other):
+        return (self.value, self.suit) == (other.value, other.suit)
+
 
 class NumberedCard (PlayingCard):
+    """
+            Class for a regular numbered playingcard
+
+    """
+
     def __init__(self, value, suit):
         self.value = value
         self.suit = suit
@@ -37,12 +51,6 @@ class NumberedCard (PlayingCard):
 
     def __str__(self):
         return "(" + str(self.value) + str(self.suit) + ")"
-
-    def __lt__(self, other):
-        if self.value == other.value:
-            return self.suit < other.suit
-        else:
-            return self.value < other.value
 
     def give_value(self):
         return (self.value)
@@ -52,6 +60,10 @@ class NumberedCard (PlayingCard):
 
 
 class JackCard (PlayingCard):
+    """
+           Class for a Jack card
+    """
+
     def __init__(self, suit):
         self.value = 11
         self.suit = suit
@@ -60,16 +72,14 @@ class JackCard (PlayingCard):
     def give_value(self):
         return (self.value)
 
-    def __lt__(self, other):
-        if self.value == other.value:
-            return self.suit < other.suit
-        else:
-            return self.value < other.value
-
     def __str__(self):
         return "(" + str(self.value) + str(self.suit) + ")"
 
 class QueenCard (PlayingCard):
+    """
+           Class for a Queen card
+    """
+
     def __init__(self, suit):
         self.value = 12
         self.suit = suit
@@ -78,16 +88,13 @@ class QueenCard (PlayingCard):
     def give_value(self):
         return (self.value)
 
-    def __lt__(self, other):
-        if self.value == other.value:
-            return self.suit < other.suit
-        else:
-            return self.value < other.value
-
     def __str__(self):
         return "(" + str(self.value) + str(self.suit) + ")"
 
 class KingCard (PlayingCard):
+    """
+           Class for a King card
+    """
     def __init__(self, suit):
         self.value = 13
         self.suit = suit
@@ -96,16 +103,13 @@ class KingCard (PlayingCard):
     def give_value(self):
         return self.value
 
-    def __lt__(self, other):
-        if self.value == other.value:
-            return self.suit < other.suit
-        else:
-            return self.value < other.value
-
     def __str__(self):
         return "(" + str(self.value) + str(self.suit) + ")"
 
 class AceCard (PlayingCard):
+    """
+           Class for an Ace
+    """
     def __init__(self, suit):
         self.value = 14
         self.suit = suit
@@ -114,17 +118,15 @@ class AceCard (PlayingCard):
     def give_value(self):
         return (self.value)
 
-    def __lt__(self, other):
-        if self.value == other.value:
-            return self.suit < other.suit
-        else:
-            return self.value < other.value
-
     def __str__(self):
         return "(" + str(self.value) + str(self.suit) + ")"
 
 
 class Deck:
+    """
+           Class that makes up the carddeck, constructor creating a deck with 52 different cards
+    """
+
     def __init__(self):
         self.deck = []
 
@@ -136,28 +138,32 @@ class Deck:
             self.deck.append(KingCard(suit))
             self.deck.append(AceCard(suit))
 
-    #def __str__(self):
-    #    for card in self.deck:
-
-
 
     def shuffle(self):
+        """
+           Shuffles the deck
+        """
         random.shuffle(self.deck)
 
-    def show(self):
+    def __str__(self):
+        cards = []
         for card in self.deck:
-            print (card)
-
-    def give_size(self):
-        return (len(self.deck))
+            cards.append(str(card))
+        return str(cards)
 
     def draw_top(self):
+        """
+           Draws the top card of the deck
+        """
         topcard = self.deck[0]
         self.deck.remove(topcard)
         return topcard
 
 
 class Hand():
+    """
+           Creates a Hand class
+    """
     def __init__ (self):
         self.hand = []
         self.currentcard = 0
@@ -174,24 +180,39 @@ class Hand():
             return self.hand[self.currentcard - 1]
 
     def __str__(self):
-        return str(self.hand)
+        cards = []
+        for card in self.hand:
+            cards.append(str(card))
+        return str(cards)
 
     def draw(self, amnt, deck):
+        """
+               Method for drawing the top card from a specific deck
+               Params: amnt = amount of cards, deck = the deck from which cards should be drawn
+        """
         for size in range(0,amnt):
             self.hand.append(deck.draw_top())
 
     def sort(self):
+        """
+           Method for sorting the hand in reference to value and suit
+        """
         self.hand = sorted(self.hand)
 
     def droppingcards(self, index):
+        """
+                   Removes cards from the hand in the indexed locations
+                   param: index = list of indices
+        """
         for i in index:
             self.hand.remove(self.hand[i])
 
-    def show(self):
-        for card in self.hand:
-            print (card)
-
     def best_poker_hand(self, cards):
+
+        """
+           Calculates the best pokerhand for self.hand together with a given amount of cards (usually the board)
+           param: cards = the board, or other list of cards
+        """
 
         self.all_av_cards = cards + self.hand
         self.poker_hands = []
@@ -212,12 +233,11 @@ class Hand():
         self.best_hand = max(self.poker_hands)
         return self.best_hand
 
-    def show_poker_hand(self):
-        for x in self.poker_hands:
-            if x:
-                x.show()
-
     def check_pair(cards):
+        """
+           Checks for pairs in given list of cards
+           param cards: A list of playing cards.
+        """
 
         cnt = Counter()
         for c in cards:
@@ -235,12 +255,24 @@ class Hand():
 
 
     def check_two_pair(cards):
+
+        """
+           Checks for two pairs in given list of cards
+           param cards: A list of playing cards.
+        """
+
         x = Hand.check_pair(cards)
         if x:
             if len(x.card_val) > 1:
                 return PokerHand(HandValue.two_pair, x.card_val)
 
     def check_three_kind(cards):
+
+        """
+           Checks for three of a kind in given list of cards
+           param cards: A list of playing cards.
+        """
+
 
         cnt = Counter()
         for c in cards:
@@ -257,6 +289,11 @@ class Hand():
             return PokerHand(HandValue.three_kind, threeval)
 
     def check_four_kind(cards):
+        """
+           Checks for four of a kind in given list of cards
+           param cards: A list of playing cards.
+        """
+
 
         cnt = Counter()
         for c in cards:
@@ -276,8 +313,7 @@ class Hand():
         """
         Checks for the best straight in a list of cards (may be more than just 5)
 
-        :param cards: A list of playing cards.
-        :return: None if no straight flush is found, else the value of the top card.
+        param cards: A list of playing cards.
         """
 
         vals = [(c.value) for c in cards] \
@@ -295,6 +331,12 @@ class Hand():
 
 
     def check_flush(cards):
+        """
+           Checks for flush in given list of cards
+           param cards: A list of playing cards.
+        """
+
+
 
         cnt = Counter()
         for c in cards:
@@ -314,8 +356,7 @@ class Hand():
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
 
-        :param cards: A list of playing cards.
-        :return: None if no straight flush is found, else the value of the top card.
+        param cards: A list of playing cards.
         """
         vals = [(c.give_value(), c.suit) for c in cards] \
                + [(1, c.suit) for c in cards if c.give_value() == 14]  # Add the aces!
@@ -334,8 +375,7 @@ class Hand():
         """
         Checks for the best full house in a list of cards (may be more than just 5)
 
-        :param cards: A list of playing cards
-        :return: None if no full house is found, else a tuple of the values of the triple and pair.
+        param cards: A list of playing cards
         """
         value_count = Counter()
         for c in cards:
@@ -354,6 +394,11 @@ class Hand():
                     return PokerHand(HandValue.full_house, [three, two])
 
     def check_royal_sflush(cards):
+        """
+           Checks for royal flush in given list of cards
+           param cards: A list of playing cards.
+        """
+
 
         x = Hand.check_straight_flush(cards)
         if x:
@@ -363,6 +408,10 @@ class Hand():
 
 
 class PokerHand:
+    """
+       Class representing a pokerhand
+       param cards: A list of playing cards.
+    """
 
     def __init__(self, type, cards):             #cardval = [highestcard1, hc2]
         self.type = HandValue(type)
@@ -377,5 +426,4 @@ class PokerHand:
                     if self.val[n] < other.val[n]:
                         return self.val[n] < other.val[n]
 
-    def show(self):
-        print (self.type, self.card_val)
+

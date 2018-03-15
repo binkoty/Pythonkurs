@@ -42,16 +42,182 @@
 <h1>Welcome to CardDeck’s documentation!<a class="headerlink" href="#welcome-to-carddeck-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<span class="target" id="module-testforass2"></span><dl class="class">
-<dt id="testforass2.HandValue">
-<em class="property">class </em><code class="descclassname">testforass2.</code><code class="descname">HandValue</code><a class="headerlink" href="#testforass2.HandValue" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-card_lib"></span><dl class="class">
+<dt id="card_lib.AceCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">AceCard</code><span class="sig-paren">(</span><em>suit</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.AceCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#card_lib.PlayingCard" title="card_lib.PlayingCard"><code class="xref py py-class docutils literal"><span class="pre">card_lib.PlayingCard</span></code></a></p>
+<p>Class for an Ace</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.Deck">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">Deck</code><a class="headerlink" href="#card_lib.Deck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class that makes up the carddeck, constructor creating a deck with 52 different cards</p>
+<dl class="method">
+<dt id="card_lib.Deck.draw_top">
+<code class="descname">draw_top</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Deck.draw_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the top card of the deck</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Deck.shuffle">
+<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Deck.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffles the deck</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.Hand">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">Hand</code><a class="headerlink" href="#card_lib.Hand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Creates a Hand class</p>
+<dl class="method">
+<dt id="card_lib.Hand.best_poker_hand">
+<code class="descname">best_poker_hand</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.best_poker_hand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the best pokerhand for self.hand together with a given amount of cards (usually the board)
+param: cards = the board, or other list of cards</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_flush">
+<code class="descname">check_flush</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for flush in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_four_kind">
+<code class="descname">check_four_kind</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_four_kind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for four of a kind in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_full_house">
+<code class="descname">check_full_house</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_full_house" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the best full house in a list of cards (may be more than just 5)</p>
+<p>param cards: A list of playing cards</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_pair">
+<code class="descname">check_pair</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for pairs in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_royal_sflush">
+<code class="descname">check_royal_sflush</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_royal_sflush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for royal flush in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_straight">
+<code class="descname">check_straight</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_straight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the best straight in a list of cards (may be more than just 5)</p>
+<p>param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_straight_flush">
+<code class="descname">check_straight_flush</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_straight_flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the best straight flush in a list of cards (may be more than just 5)</p>
+<p>param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_three_kind">
+<code class="descname">check_three_kind</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_three_kind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for three of a kind in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.check_two_pair">
+<code class="descname">check_two_pair</code><span class="sig-paren">(</span><em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.check_two_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for two pairs in given list of cards
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.draw">
+<code class="descname">draw</code><span class="sig-paren">(</span><em>amnt</em>, <em>deck</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for drawing the top card from a specific deck
+Params: amnt = amount of cards, deck = the deck from which cards should be drawn</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.droppingcards">
+<code class="descname">droppingcards</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.droppingcards" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes cards from the hand in the indexed locations
+param: index = list of indices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="card_lib.Hand.sort">
+<code class="descname">sort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.Hand.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for sorting the hand in reference to value and suit</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.HandValue">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">HandValue</code><a class="headerlink" href="#card_lib.HandValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.IntEnum</span></code></p>
 <p>An enumeration.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="testforass2.Suits">
-<em class="property">class </em><code class="descclassname">testforass2.</code><code class="descname">Suits</code><a class="headerlink" href="#testforass2.Suits" title="Permalink to this definition">¶</a></dt>
+<dt id="card_lib.JackCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">JackCard</code><span class="sig-paren">(</span><em>suit</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.JackCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#card_lib.PlayingCard" title="card_lib.PlayingCard"><code class="xref py py-class docutils literal"><span class="pre">card_lib.PlayingCard</span></code></a></p>
+<p>Class for a Jack card</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.KingCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">KingCard</code><span class="sig-paren">(</span><em>suit</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.KingCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#card_lib.PlayingCard" title="card_lib.PlayingCard"><code class="xref py py-class docutils literal"><span class="pre">card_lib.PlayingCard</span></code></a></p>
+<p>Class for a King card</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.NumberedCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">NumberedCard</code><span class="sig-paren">(</span><em>value</em>, <em>suit</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.NumberedCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#card_lib.PlayingCard" title="card_lib.PlayingCard"><code class="xref py py-class docutils literal"><span class="pre">card_lib.PlayingCard</span></code></a></p>
+<p>Class for a regular numbered playingcard</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.PlayingCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">PlayingCard</code><a class="headerlink" href="#card_lib.PlayingCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>PlayingCard class containing methods for comparison which are inherited to the different card-classes</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.PokerHand">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">PokerHand</code><span class="sig-paren">(</span><em>type</em>, <em>cards</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.PokerHand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class representing a pokerhand
+param cards: A list of playing cards.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.QueenCard">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">QueenCard</code><span class="sig-paren">(</span><em>suit</em><span class="sig-paren">)</span><a class="headerlink" href="#card_lib.QueenCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#card_lib.PlayingCard" title="card_lib.PlayingCard"><code class="xref py py-class docutils literal"><span class="pre">card_lib.PlayingCard</span></code></a></p>
+<p>Class for a Queen card</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="card_lib.Suits">
+<em class="property">class </em><code class="descclassname">card_lib.</code><code class="descname">Suits</code><a class="headerlink" href="#card_lib.Suits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.IntEnum</span></code></p>
 <p>An enumeration.</p>
 </dd></dl>

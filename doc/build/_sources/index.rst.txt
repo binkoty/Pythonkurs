@@ -10,7 +10,7 @@ Welcome to CardDeck's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: testforass2
+.. automodule:: card_lib
    :members:
    :show-inheritance:
 
