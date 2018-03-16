@@ -1,4 +1,4 @@
-import testforass2
+import card_lib
 
 def test_card_value():
     assert testforass2.JackCard(testforass2.Suits.Hearts).give_value() == 11
@@ -22,5 +22,6 @@ def test_HandValue():
     assert testforass2.HandValue.four_kind == 7
     assert testforass2.HandValue.straight_flush == 8
     assert testforass2.HandValue.royal_flush == 9
-
-
+def test_cardsize():
+    deck = card_lib.Deck()
+    assert len(deck.deck) == 52

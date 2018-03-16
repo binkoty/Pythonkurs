@@ -34,7 +34,7 @@ class PlayingCard():
     def __lt__(self, other):
         return (self.value, self.suit) < (other.value, other.suit)
 
-    def __eq__(selfs, other):
+    def __eq__(self, other):
         return (self.value, self.suit) == (other.value, other.suit)
 
 
@@ -425,5 +425,3 @@ class PokerHand:
                 for n in range(0,len(self.val)):
                     if self.val[n] < other.val[n]:
                         return self.val[n] < other.val[n]
-
-

@@ -13,11 +13,6 @@ class TableScene(QGraphicsScene):
         self.tile = QPixmap('cards/table.png')
         self.setBackgroundBrush(QBrush(self.tile))
 
-class Players(enum.IntEnum):
-    Player1 = 1
-    Player2 = 2
-
-
 class CardItem(QGraphicsSvgItem):
     """ A simple overloaded QGraphicsSvgItem that also stores the card position """
     def __init__(self, renderer, position):
@@ -120,21 +115,24 @@ class CardView(QGraphicsView):
             # The model can choose to do whatever it wants with this information.
             self.model.clicked_position(item.position)
 
-class Game(QObject):
+class GameState(QObject):
     data_changed = pyqtSignal()
 
     def __init__(self):
+
+                #creates the deck and hands required for the game, and draws the appropriate amount of cards
+
         QObject.__init__(self)
+        self.pot = 0
 
         self.deck = card_lib.Deck()
         self.deck.shuffle()
 
         self.player1 = HandModel()
         self.player1.draw(2, self.deck)
+
         self.player2 = HandModel()
         self.player2.draw(2, self.deck)
-
-        self.players = [self.player1, self.player2]
 
         self.board = HandModel()
         self.board.draw(3, self.deck)
@@ -144,18 +142,43 @@ class Game(QObject):
         self.inactive_player = self.player2
         self.active_player.flip()
 
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
+        self.data_changed.emit()
+
     def raise_bet(self):
+
+        #raises the bet for the active player, warns the player if trying to place a bet when out of money
+
+        if self.active_player.credits < 10:
+            self.warn = QLabel('Not enough money to place bet')
+            self.warn.setGeometry(QRect(50, 50, 300, 40))
+            self.warn.show()
+            return
         self.active_player.credits -= 10
         self.active_player.bet += 10
+        self.pot += 10
         self.active_player.data_changed.emit()
+        self.data_changed.emit()
 
     def fold(self):
-        self.active_player.folded = True
+
+        #makes the game skip directly to comparing the hands
+
         self.check_winner()
         self.player1.data_changed.emit()
         self.player2.data_changed.emit()
+        self.data_changed.emit()
 
     def call(self):
+
+        #switches active player and warns the player if trying to call without having matched the opponents bet
+
+        if self.active_player.bet < self.inactive_player.bet:
+            self.warn = QLabel('Need to at least match opponents bet')
+            self.warn.setGeometry(QRect(50, 50, 300, 40))
+            self.warn.show()
+            return
         self.player1.flip()
         self.player2.flip()
 
@@ -167,10 +190,13 @@ class Game(QObject):
 
         self.player1.data_changed.emit()
         self.player2.data_changed.emit()
-
-
+        self.data_changed.emit()
 
     def next_turn(self):
+
+        #draws a card from the deck for the board as long as there are not five cards on the board,
+        # in that case goes to comparing hands instead
+
         if len(self.board.hand) > 4:
             self.check_winner()
             return
@@ -180,19 +206,91 @@ class Game(QObject):
         self.board.data_changed.emit()
         self.player1.data_changed.emit()
         self.player2.data_changed.emit()
+        self.data_changed.emit()
 
 
     def check_winner(self):
 
+        #compares hands and shows a prompt with the winning player,
+        # also shows if the match is complete (based on if any player is broke)
+
         self.player1.best_poker_hand(self.board.hand)
         self.player2.best_poker_hand(self.board.hand)
 
+        self.won = QLabel()
+        self.won.setGeometry(QRect(40, 40, 160, 40))
+
         if self.player1.best_hand < self.player2.best_hand:
-            print('player2 Vann')
+            self.won.setText('Player 2 Won')
+            self.winner = self.player2
+
         elif self.player2.best_hand < self.player1.best_hand:
-            print('player1 Vann')
+            self.won.setText('Player 1 Won')
+            self.winner = self.player1
+
+        elif self.player1.hand < self.player2.hand:
+            self.won.setText('Player 1 Won')
+            self.winner = self.player1
+
+        elif self.player2.hand < self.player1.hand:
+            self.won.setText('Player 2 Won')
+            self.winner = self.player2
+
         else:
-            print('draw, cant compare suits')
+            self.won.setText('Draw')
+            self.won.show()
+            return
+
+        self.winner.credits = self.winner.credits + self.pot
+        self.won.show()
+        self.clear()
+        if self.player1.credits < 10:
+            self.warn = QLabel('Match complete, player 2 won')
+            self.warn.setGeometry(QRect(50, 50, 300, 40))
+            self.warn.show()
+            return
+        elif self.player2.credits < 10:
+            self.warn = QLabel('Match complete, player 1 won')
+            self.warn.setGeometry(QRect(50, 50, 300, 40))
+            self.warn.show()
+            return
+        else:
+            self.new_game()
+
+
+    def clear(self):
+
+        #clears board and hands from cards, as well as pot and bet values
+
+        self.player1.hand = []
+        self.player2.hand = []
+        self.player1.bet = 0
+        self.player2.bet = 0
+        self.board.hand = []
+        self.pot = 0
+        self.active_player = self.player1
+        self.inactive_player = self.player2
+        self.active_player.flipped_cards = False
+        self.inactive_player.flipped_cards = True
+
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
+        self.board.data_changed.emit()
+        self.data_changed.emit()
+
+    def new_game(self):
+
+        #draws cards for a new game
+
+        self.deck.shuffle()
+        self.active_player.draw(2,self.deck)
+        self.inactive_player.draw(2,self.deck)
+        self.board.draw(3,self.deck)
+
+        self.player1.data_changed.emit()
+        self.player2.data_changed.emit()
+        self.board.data_changed.emit()
+        self.data_changed.emit()
 
 class HandModel(card_lib.Hand, QObject):
     data_changed = pyqtSignal()
@@ -201,10 +299,9 @@ class HandModel(card_lib.Hand, QObject):
         card_lib.Hand.__init__(self)
         QObject.__init__(self)
         self.credits = 100
-        self.folded = False
-        self.active = False
         self.flipped_cards = True
         self.bet = 0
+        self.hand = []
 
 
     def flip(self):
@@ -223,10 +320,10 @@ class HandModel(card_lib.Hand, QObject):
         self.data_changed.emit()
 
 
-
-
 class Buttons(QWidget):
     data_changed = pyqtSignal()
+
+    #class containing the buttons for raising, folding and calling, also connects them to the appropriate method in the GameState class
 
     def __init__(self, state):
         super().__init__()
@@ -238,46 +335,60 @@ class Buttons(QWidget):
         self.FoldButton.clicked.connect(state.fold)
 
 
+class Labels(QWidget):
+    data_changed = pyqtSignal()
 
-    def Raise(self):
-        pass
+    #contains the labels, as well as a method for updating them (called upon whenever the gamestate changes)
 
+    def __init__(self,state):
+        super().__init__()
+        self.state_model = state
+        self.state_model.data_changed.connect(self.update_labels)
+        self.min_bet_label = QLabel()
+        self.pot_label = QLabel()
+        self.bet_label = QLabel()
+        self.credits_label = QLabel()
+        self.update_labels()
 
-
-
-# Lets test it out
-app = QApplication(sys.argv)
-
-'''
-deck = card_lib.Deck()
-deck.shuffle()
-hand1 = HandModel()
-hand1.draw(2,deck)
-hand2 = HandModel()
-hand2.draw(2,deck)
-board = HandModel()
-board.draw(3,deck)
-
-'''
-game = Game()
-board_view = CardView(game.board)
-active_player_view = CardView(game.active_player)
-inactive_player_view = CardView(game.inactive_player)
-# Creating a small demo window to work with, and put the card_view inside:
+    def update_labels(self):
+        self.min_bet_label.setText('Minumum bet:' + str(self.state_model.inactive_player.bet))
+        self.credits_label.setText('Credits:' + str(self.state_model.active_player.credits))
+        self.pot_label.setText('Current Pot:' + str(self.state_model.pot))
+        self.bet_label.setText('Currently Betted:' + str(self.state_model.active_player.bet))
 
 
-buttons = Buttons(game)
 
-box = QVBoxLayout()
-box.addWidget(active_player_view)
-box.addWidget(board_view)
-box.addWidget(buttons.RaiseButton)
-box.addWidget(buttons.CallButton)
-box.addWidget(buttons.FoldButton)
-box.addWidget(inactive_player_view)
+def main():
+    app = QApplication(sys.argv)
 
-player_view = QGroupBox('player')
-player_view.setLayout(box)
-player_view.show()
+    game = GameState()
+    board_view = CardView(game.board)
+    player1_view = CardView(game.active_player)
+    player2_view = CardView(game.inactive_player)
 
-app.exec_()
+    buttons = Buttons(game)
+    labels = Labels(game)
+
+    box = QVBoxLayout()
+    box.addWidget(player1_view)
+    box.addWidget(board_view)
+    box.addWidget(player2_view)
+
+    box.addWidget(buttons.RaiseButton)
+    box.addWidget(buttons.CallButton)
+    box.addWidget(buttons.FoldButton)
+
+    box.addWidget(labels.min_bet_label)
+    box.addWidget(labels.pot_label)
+    box.addWidget(labels.bet_label)
+    box.addWidget(labels.credits_label)
+
+    game_view = QGroupBox('Game')
+    game_view.setLayout(box)
+    game_view.show()
+
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
